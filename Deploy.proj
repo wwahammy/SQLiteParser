@@ -1,0 +1,23 @@
+<Project ToolsVersion="4.0" DefaultTargets="Go" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RootDir Condition="'$(RootDir)'==''">.</RootDir>
+    <NuGetExe Condition="'$(NuGetExe)'==''">$(RootDir)\.nuget\nuget.exe</NuGetExe>
+    <Author Condition="'$(Author)' == ''">Outercurve Foundation</Author>
+    <ProjectUrl Condition="'$(ProjectUrl)'==''">http://something.com</ProjectUrl>
+    <Version Condition="'$(Version)'==''">0.0.5-prerelease</Version>
+    
+  </PropertyGroup>
+  
+  <Target Name="Go" DependsOnTargets="Build; Package">
+  </Target>
+  
+  <Target Name="Build">
+    
+    <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Build"/>
+    
+  </Target>
+
+  <Target Name="Package">
+    <Exec Command="&quot;$(NuGetExe)&quot; pack SQLiteParser.nuspec -Version $(Version) -Properties author=&quot;$(Author)&quot;;projecturl=&quot;$(ProjectUrl)&quot;;version=$(Version);configuration=$(Configuration)"/>
+  </Target>
+</Project>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Outercurve.SQLiteParser</id>
+    <version>$version$</version>
+    <title>SQLiteParser for .Net</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://something.com</licenseUrl>
+    <projectUrl>$projecturl$</projectUrl>
+    <iconUrl>http://something.com</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Works on </description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="Antlr4" version="4.1.0-alpha003"/>
+      <dependency id="Antlr4.Runtime" version="4.1.0-alpha003"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.dll" target="lib"/>
+    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.pdb" target="lib"/>
+    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.xml" target="lib"/>
+  </files>
+</package>
