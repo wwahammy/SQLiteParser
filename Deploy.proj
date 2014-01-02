@@ -15,6 +15,12 @@
   <Target Name="Go" DependsOnTargets="Build; Test; Package">
   </Target>
   
+  <Target Name="Clean">
+    <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Clean"/>
+    <MSBuild Projects="$(RootDir)\SQLiteTreeCreator.sln" Targets="Clean"/>
+    <Delete Files="$(RootDir)\MSBuild.log;$(RootDir)\*.nupkg"/>
+  </Target>
+  
   <Target Name="Build">
     
     <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Build"/>
