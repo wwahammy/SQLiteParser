@@ -21,9 +21,15 @@
     <Delete Files="$(RootDir)\MSBuild.log;$(RootDir)\*.nupkg"/>
   </Target>
   
-  <Target Name="Build">
+  <Target Name="Build" DependsOnTargets="BuildParser;BuildTreeCreator"/>
+    
+  <Target Name="BuildParser">
     
     <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Build"/>
+    
+  </Target>
+  
+  <Target Name="BuildTreeCreator">
     <MSBuild Projects="$(RootDir)\SQLiteTreeCreator.sln" Targets="Build"/>
   </Target>
 
