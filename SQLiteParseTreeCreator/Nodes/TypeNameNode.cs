@@ -9,6 +9,8 @@ namespace SQLiteParseTreeCreator.Nodes
 {
     public class TypeNameNode : SQLiteParseTreeNode
     {
+        private IList<string> _signedNumbers = new List<string>();
+
         public TypeNameNode()
         {
             
@@ -19,7 +21,11 @@ namespace SQLiteParseTreeCreator.Nodes
         }
         public string TypeName { get; set; }
 
-        public IList<string> SignedNumbers { get; set; }
+        public IList<string> SignedNumbers
+        {
+            get { return _signedNumbers; }
+            set { _signedNumbers = value; }
+        }
 
         public override TResult Accept<TResult>(ILogicalParseTreeVisitor<TResult> visitor)
         {

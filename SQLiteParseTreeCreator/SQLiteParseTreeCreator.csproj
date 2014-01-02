@@ -66,8 +66,8 @@
     <Compile Include="Nodes\ForeignOnDeleteNode.cs" />
     <Compile Include="Nodes\ForeignOnUpdateNode.cs" />
     <Compile Include="Nodes\SortOrder.cs" />
+    <Compile Include="Nodes\TableConstraint\IndexClauseNode.cs" />
     <Compile Include="Nodes\TableConstraint\IndexedColumnNode.cs" />
-    <Compile Include="Nodes\TableConstraint\IndexedColumnTableConstraint.cs" />
     <Compile Include="Nodes\TableConstraint\TableConstraintCheckNode.cs" />
     <Compile Include="Nodes\TableConstraint\TableConstraintForeignKeyNode.cs" />
     <Compile Include="Nodes\TableConstraint\TableConstraintNode.cs" />

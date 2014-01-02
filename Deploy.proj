@@ -1,20 +1,28 @@
 <Project ToolsVersion="4.0" DefaultTargets="Go" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  
   <PropertyGroup>
     <RootDir Condition="'$(RootDir)'==''">.</RootDir>
     <NuGetExe Condition="'$(NuGetExe)'==''">$(RootDir)\.nuget\nuget.exe</NuGetExe>
     <Author Condition="'$(Author)' == ''">Outercurve Foundation</Author>
-    <ProjectUrl Condition="'$(ProjectUrl)'==''">http://something.com</ProjectUrl>
-    <Version Condition="'$(Version)'==''">0.0.5-prerelease</Version>
-    
+    <ProjectUrl Condition="'$(ProjectUrl)'==''">http://www.outercurve.org</ProjectUrl>
+    <Version Condition="'$(Version)'==''">0.0.6-prerelease</Version>
+
   </PropertyGroup>
-  
-  <Target Name="Go" DependsOnTargets="Build; Package">
+  <UsingTask
+      AssemblyFile="$(RootDir)\packages\xunit.1.9.2\lib\net20\xunit.runner.msbuild.dll"
+      TaskName="Xunit.Runner.MSBuild.xunit"/>
+  <Target Name="Go" DependsOnTargets="Build; Test; Package">
   </Target>
   
   <Target Name="Build">
     
     <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Build"/>
-    
+    <MSBuild Projects="$(RootDir)\SQLiteTreeCreator.sln" Targets="Build"/>
+  </Target>
+
+  <Target Name="Test">
+    <xunit Assembly="$(RootDir)\SQLiteParseTreeTest\bin\$(Configuration)\SQLiteParseTreeTest.dll"/>
   </Target>
 
   <Target Name="Package">

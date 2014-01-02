@@ -62,10 +62,8 @@ column_constraint__postfix : NOT NULL conflict_clause
     }
     |
 	COLLATE collation_name
-	/** this isn't in the grammar diagrams but a NULL here is acceptable. Yes, the SQLite is lying to us. **/
 	|NULL
-	|
-    foreign_key_clause;
+	| foreign_key_clause;
 
 
 foreign_key_clause: REFERENCES table_name foreign_key_clause__parens_field_list? (foreign_key_clause__on_delete | foreign_key_clause__on_update | foreign_key_clause__match)* foreign_key_clause__deferrable?;
