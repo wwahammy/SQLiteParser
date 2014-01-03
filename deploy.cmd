@@ -8,5 +8,5 @@ if "%config%" == "" (
 
 
 set EnableNuGetPackageRestore=true
-%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild Deploy.proj /p:Configuration="%config%" /p:Platform="Any CPU" /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=Detailed /nr:false
+%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild Deploy.proj /p:Configuration="%config%" /p:Platform="Any CPU" /m /v:M /nr:false
 ENDLOCAL
