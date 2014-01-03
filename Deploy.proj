@@ -7,31 +7,45 @@
     <Author Condition="'$(Author)' == ''">Outercurve Foundation</Author>
     <ProjectUrl Condition="'$(ProjectUrl)'==''">http://www.outercurve.org</ProjectUrl>
     <Version Condition="'$(Version)'==''">0.0.6-prerelease</Version>
-
+	
   </PropertyGroup>
   <UsingTask
       AssemblyFile="$(RootDir)\packages\xunit.1.9.2\lib\net20\xunit.runner.msbuild.dll"
       TaskName="Xunit.Runner.MSBuild.xunit"/>
-  <Target Name="Go" DependsOnTargets="Build; Test; Package">
+  <Target Name="Go" DependsOnTargets="RestorePackages; Build; Test; Package">
   </Target>
+  
+  <ItemGroup>
+	  <Solution Include="$(RootDir)\SQLiteParser.sln"/>
+	  <Solution Include="$(RootDir)\SQLiteTreeCreator.sln"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+	  <DeleteFiles Include="$(RootDir)\*.nupkg"/>
+	  <DeleteFiles Include="$(RootDir)\MSBuild.log"/>
+	  <DeleteFolders Include="$(RootDir)\packages"/>
+  </ItemGroup>
   
   <Target Name="Clean">
-    <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Clean"/>
-    <MSBuild Projects="$(RootDir)\SQLiteTreeCreator.sln" Targets="Clean"/>
-    <Delete Files="$(RootDir)\MSBuild.log;$(RootDir)\*.nupkg"/>
+    <MSBuild Projects="@(Solution)" Targets="Clean"/>
+  
+    <Delete Files="@(DeleteFiles)"/>
+	<RemoveDir Directories="@(DeleteFolders)"/>
   </Target>
   
-  <Target Name="Build" DependsOnTargets="BuildParser;BuildTreeCreator"/>
+  <Target Name="RestorePackages">
+	  <MSBuild Projects="$(RootDir)\SQLiteParser\SQLiteParser.csproj" Targets="RestorePackages"/>
+  </Target>
+  
+
     
-  <Target Name="BuildParser">
+  <Target Name="Build">
     
-    <MSBuild Projects="$(RootDir)\SQLiteParser.sln" Targets="Build"/>
+    <MSBuild Projects="@(Solution)" Targets="Build"/>
     
   </Target>
   
-  <Target Name="BuildTreeCreator">
-    <MSBuild Projects="$(RootDir)\SQLiteTreeCreator.sln" Targets="Build"/>
-  </Target>
+  
 
   <Target Name="Test">
     <xunit Assembly="$(RootDir)\SQLiteParseTreeTest\bin\$(Configuration)\SQLiteParseTreeTest.dll"/>
