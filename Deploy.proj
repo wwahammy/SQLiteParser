@@ -19,7 +19,8 @@
   
   
   <Target Name="Appveyor" DependsOnTargets="Go">
-		<Copy SourceFiles="$(RootDir)\Outercurve.SQLiteParser.$(Version)" DestinationFolder="$(OutFolder)"/>
+		<Message Text="$(OutFolder)"/>
+		<Copy SourceFiles="$(RootDir)\Outercurve.SQLiteParser.$(Version).nupkg" DestinationFolder="$(OutFolder)"/>
   </Target>
   <ItemGroup>
 	  <Solution Include="$(RootDir)\SQLiteParser.sln"/>
