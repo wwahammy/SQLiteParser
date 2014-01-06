@@ -10,12 +10,17 @@
 	<Version Condition="'$(Appveyor_ProjectVersion)'!= ''">$(Appveyor_ProjectVersion)-prerelease</Version>
 	
   </PropertyGroup>
+  
   <UsingTask
       AssemblyFile="$(RootDir)\packages\xunit.1.9.2\lib\net20\xunit.runner.msbuild.dll"
       TaskName="Xunit.Runner.MSBuild.xunit"/>
   <Target Name="Go" DependsOnTargets="RestorePackages; Build; Test; Package">
   </Target>
   
+  
+  <Target Name="Appveyor" DependsOnTargets="Go">
+		<Copy SourceFiles="$(RootDir)\Outercurve.SQLiteParser.$(Version)" DestinationFolder="$(OutFolder)"/>
+  </Target>
   <ItemGroup>
 	  <Solution Include="$(RootDir)\SQLiteParser.sln"/>
 	  <Solution Include="$(RootDir)\SQLiteTreeCreator.sln"/>
