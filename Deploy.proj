@@ -34,15 +34,14 @@
   </Target>
   
   <Target Name="RestorePackages">
-	  <MSBuild Projects="$(RootDir)\SQLiteParser\SQLiteParser.csproj" Targets="RestorePackages"/>
+	  <Exec Command="&quot;$(NuGetExe)&quot; restore SQLiteParser.sln"/>
+	  <Exec Command="&quot;$(NuGetExe)&quot; restore SQLiteTreeCreator.sln"/>
   </Target>
   
 
     
   <Target Name="Build">
-    
     <MSBuild Projects="@(Solution)" Targets="Build"/>
-    
   </Target>
   
   

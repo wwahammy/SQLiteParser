@@ -19,8 +19,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.dll" target="lib"/>
+    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.dll" target="lib" exclude="**/Antlr4*.dll" />
     <file src="SQLiteParseTreeCreator\bin\$configuration$\*.pdb" target="lib"/>
-    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.xml" target="lib"/>
+    <file src="SQLiteParseTreeCreator\bin\$configuration$\*.xml" target="lib" exclude="**/Antlr4*.xml"/>
   </files>
 </package>
