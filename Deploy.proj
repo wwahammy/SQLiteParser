@@ -7,6 +7,7 @@
     <Author Condition="'$(Author)' == ''">Outercurve Foundation</Author>
     <ProjectUrl Condition="'$(ProjectUrl)'==''">http://www.outercurve.org</ProjectUrl>
     <Version Condition="'$(Version)'==''">0.0.6-prerelease</Version>
+	<Version Condition="'$(Appveyor_ProjectVersion)'!= ''">$(Appveyor_ProjectVersion)-prerelease</Version>
 	
   </PropertyGroup>
   <UsingTask
