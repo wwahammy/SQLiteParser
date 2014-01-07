@@ -19,9 +19,9 @@ foreach($artifact in $artifacts.values)
     Write-Output "Path: $($artifact.path)"
     Write-Output "Url: $($artifact.url)"
 }
-
+$artifact = $artifacts
 cd $srcFolder
 Write-Output "Source Folder: $srcFolder"
-Write-Output ".\.nuget\nuget.exe push $($artifacts[0].path) $($variables["secureNuGetApiKey"]) -Source $($variables["nugetApiUri"])"
-.\.nuget\nuget.exe push $($($artifacts[0]).path) $variables["secureNuGetApiKey"] -Source $variables["nugetApiUri"]
+Write-Output ".\.nuget\nuget.exe push $($artifacts.values[0].path) $($variables["secureNuGetApiKey"]) -Source $($variables["nugetApiUri"])"
+.\.nuget\nuget.exe push $($artifacts.values[0].path) $variables["secureNuGetApiKey"] -Source $variables["nugetApiUri"]
 
