@@ -8,9 +8,7 @@
     $tempFolder,
     $projectName,
     $projectVersion,
-    $projectBuildNumber,
-    $secureNuGetApiKey,
-    $nugetApiUri
+    $projectBuildNumber
 )
 
 # list all artifacts
@@ -24,5 +22,6 @@ foreach($artifact in $artifacts.values)
 
 cd $srcFolder
 Write-Output "Source Folder: $srcFolder"
-Write-Output ".\.nuget\nuget.exe push $($artifacts[0].path) $secureNuGetApiKey -Source $($nugetApiUri)"
-.\.nuget\nuget.exe push $($artifacts[0].path) $($secureNuGetApiKey) -Source $($nugetApiUri)
+Write-Output ".\.nuget\nuget.exe push $($artifacts[0].path) $($variables["secureNuGetApiKey"]) -Source $($variables["nugetApiUri"])"
+.\.nuget\nuget.exe push $artifacts[0].path $variables["secureNuGetApiKey"] -Source $variables["nugetApiUri"]
+
