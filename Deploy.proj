@@ -8,7 +8,7 @@
     <ProjectUrl Condition="'$(ProjectUrl)'==''">http://www.outercurve.org</ProjectUrl>
     <Version Condition="'$(Version)'==''">0.0.6-prerelease</Version>
 	<Version Condition="'$(Appveyor_ProjectVersion)'!= ''">$(Appveyor_ProjectVersion)-prerelease</Version>
-	<OutFolder>$(OutFolder)</OutFolder>
+	
   </PropertyGroup>
   
   <UsingTask
@@ -19,7 +19,9 @@
   
   
   <Target Name="Appveyor" DependsOnTargets="Go">
-		<Message Text="$(OutFolder)"/>
+		<PropertyGroup>
+			<OutFolder>..\out</OutFolder>
+		</PropertyGroup>
 		<Copy SourceFiles="$(RootDir)\Outercurve.SQLiteParser.$(Version).nupkg" DestinationFolder="$(OutFolder)"/>
   </Target>
   <ItemGroup>
