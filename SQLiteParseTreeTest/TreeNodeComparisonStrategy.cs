@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ExpectedObjects;
 using ExpectedObjects.Strategies;
-using SQLiteParseTreeCreator;
+using Outercurve.SQLiteCreateTree;
 
 namespace SQLiteParseTreeTest
 {

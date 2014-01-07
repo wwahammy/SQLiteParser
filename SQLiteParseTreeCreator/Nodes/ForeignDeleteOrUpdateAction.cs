@@ -1,4 +1,4 @@
-﻿namespace SQLiteParseTreeCreator.Nodes
+﻿namespace Outercurve.SQLiteCreateTree.Nodes
 {
     public enum ForeignDeleteOrUpdateAction
     {

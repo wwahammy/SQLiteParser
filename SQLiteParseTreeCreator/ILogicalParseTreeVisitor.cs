@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SQLiteParseTreeCreator.Nodes;
-using SQLiteParseTreeCreator.Nodes.ColumnConstraint;
-using SQLiteParseTreeCreator.Nodes.TableConstraint;
+﻿using Outercurve.SQLiteCreateTree.Nodes;
+using Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint;
+using Outercurve.SQLiteCreateTree.Nodes.TableConstraint;
 
-namespace SQLiteParseTreeCreator
+namespace Outercurve.SQLiteCreateTree
 {
     public interface ILogicalParseTreeVisitor<out T>
     {

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Antlr4.Runtime;
-using SQLiteParseTreeCreator.Nodes;
+﻿using Antlr4.Runtime;
 
-namespace SQLiteParseTreeCreator
+namespace Outercurve.SQLiteCreateTree
 {
     public abstract class SQLiteParseTreeNode
     {

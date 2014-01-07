@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Antlr4.Runtime.Tree;
-
-using SQLiteParseTreeCreator.Nodes;
+using Outercurve.SQLiteCreateTree.Nodes;
+using Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint;
+using Outercurve.SQLiteCreateTree.Nodes.TableConstraint;
 using Outercurve.SQLiteParser;
-using SQLiteParseTreeCreator.Nodes.ColumnConstraint;
-using SQLiteParseTreeCreator.Nodes.TableConstraint;
 
-
-namespace SQLiteParseTreeCreator
+namespace Outercurve.SQLiteCreateTree
 {
     public class SQLiteParseVisitor : SQLiteParserSimpleBaseVisitor<SQLiteParseTreeNode>
     {

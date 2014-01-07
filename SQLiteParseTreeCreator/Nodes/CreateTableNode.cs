@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Outercurve.SQLiteCreateTree.Nodes.TableConstraint;
 using Outercurve.SQLiteParser;
-using SQLiteParseTreeCreator.Nodes.TableConstraint;
 
-namespace SQLiteParseTreeCreator.Nodes
+namespace Outercurve.SQLiteCreateTree.Nodes
 {
     public class CreateTableNode : SQLiteParseTreeNode
     {

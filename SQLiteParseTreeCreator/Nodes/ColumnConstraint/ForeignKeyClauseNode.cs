@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 
-namespace SQLiteParseTreeCreator.Nodes.ColumnConstraint
+namespace Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint
 {
     public class ForeignKeyClauseNode : ColumnConstraintNode
     {

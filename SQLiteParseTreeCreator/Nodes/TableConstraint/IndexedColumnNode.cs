@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 
-namespace SQLiteParseTreeCreator.Nodes.TableConstraint
+namespace Outercurve.SQLiteCreateTree.Nodes.TableConstraint
 {
     public class IndexedColumnNode : SQLiteParseTreeNode
     {

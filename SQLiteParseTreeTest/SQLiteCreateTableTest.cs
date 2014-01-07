@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using ExpectedObjects;
+using Outercurve.SQLiteCreateTree;
+using Outercurve.SQLiteCreateTree.Nodes;
+using Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint;
+using Outercurve.SQLiteCreateTree.Nodes.TableConstraint;
 using Outercurve.SQLiteParser;
-using SQLiteParseTreeCreator;
-using SQLiteParseTreeCreator.Nodes;
-using SQLiteParseTreeCreator.Nodes.ColumnConstraint;
-using SQLiteParseTreeCreator.Nodes.TableConstraint;
 using Xunit;
 
 namespace SQLiteParseTreeTest
