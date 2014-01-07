@@ -23,4 +23,6 @@ foreach($artifact in $artifacts.values)
 }
 
 cd $srcFolder
+Write-Output "Source Folder: $srcFolder"
+Write-Output ".\.nuget\nuget.exe push $artifacts[0].path $secureNuGetApiKey -Source $nugetApiUri"
 .\.nuget\nuget.exe push $artifacts[0].path $secureNuGetApiKey -Source $nugetApiUri
