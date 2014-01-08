@@ -85,6 +85,28 @@ namespace SQLiteParseTreeTest
         }
 
         [Fact]
+        public void  TestTreeStringOutputVisitorWithNullTableConstraints()
+        {
+            var sampleWithoutTableConstraint =  new CreateTableNode
+            {
+                TableName = "PROJECTS",
+                ColumnDefinitions = new[]
+                {
+                    new ColumnDefNode
+                    {
+                        ColumnName = "CLASSID",
+                        TypeNameNode = new TypeNameNode {TypeName = "int"},
+                        ColumnConstraints = new[] {new DefaultConstraintNode() { Value = "NULL"}}
+
+                    }
+                }
+            };
+            
+            var visitor = new TreeStringOutputVisitor();
+            Assert.DoesNotThrow(() => sampleWithoutTableConstraint.Accept(visitor).ToString());
+        }
+
+        [Fact]
         public void TestWithTableConstraintsRoundTrip()
         {
             var parser = RunParser(

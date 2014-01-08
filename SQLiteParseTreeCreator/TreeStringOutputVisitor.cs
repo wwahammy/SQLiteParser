@@ -63,7 +63,7 @@ namespace Outercurve.SQLiteCreateTree
                 sb.Append(string.Join(", ", createTableNode.ColumnDefinitions.Select(c => c.Accept(this).ToString())));
 
 
-                if (createTableNode.TableConstraints.Any())
+                if (createTableNode.TableConstraints != null && createTableNode.TableConstraints.Any())
                 {
                     sb.Append(", ");
                     sb.Append(string.Join(", ", createTableNode.TableConstraints.Select(c => c.Accept(this).ToString())));
