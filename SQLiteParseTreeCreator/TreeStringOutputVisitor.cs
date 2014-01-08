@@ -13,7 +13,7 @@ namespace Outercurve.SQLiteCreateTree
             
         }
 
-        StringBuilder ILogicalParseTreeVisitor<StringBuilder>.Visit(TypeNameNode typeNameNode)
+        public StringBuilder Visit(TypeNameNode typeNameNode)
         {
 
 
@@ -31,7 +31,7 @@ namespace Outercurve.SQLiteCreateTree
 
             return sb;
         }
-        StringBuilder ILogicalParseTreeVisitor<StringBuilder>.Visit(CreateTableNode createTableNode)
+        public StringBuilder Visit(CreateTableNode createTableNode)
         {
 
             var sb = new StringBuilder();
@@ -81,7 +81,7 @@ namespace Outercurve.SQLiteCreateTree
             return sb;
         }
 
-        StringBuilder ILogicalParseTreeVisitor<StringBuilder>.Visit(ColumnDefNode columnDefNode)
+        public StringBuilder Visit(ColumnDefNode columnDefNode)
         {
             var sb = new StringBuilder();
             sb.Append(columnDefNode.ColumnName);
