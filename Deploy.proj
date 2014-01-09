@@ -6,7 +6,7 @@
     <NuGetExe Condition="'$(NuGetExe)'==''">$(RootDir)\.nuget\nuget.exe</NuGetExe>
     <Author Condition="'$(Author)' == ''">Outercurve Foundation</Author>
     <ProjectUrl Condition="'$(ProjectUrl)'==''">http://www.outercurve.org</ProjectUrl>
-    <Version Condition="'$(Version)'==''">0.0.6-prerelease</Version>
+    <Version Condition="'$(Version)'==''">0.1.0-prerelease</Version>
 	<Version Condition="'$(Appveyor_ProjectVersion)'!= ''">$(Appveyor_ProjectVersion)-prerelease</Version>
 	
   </PropertyGroup>

@@ -299,12 +299,7 @@ namespace SQLiteParseTreeTest
 
         public SQLiteParseTreeNode RunParser(string parseString)
         {
-            AntlrInputStream inputStream = new AntlrInputStream(parseString);
-            SQLiteParserSimpleLexer sqliteLexer = new SQLiteParserSimpleLexer(inputStream);
-            CommonTokenStream commonTokenStream = new CommonTokenStream(sqliteLexer);
-            SQLiteParserSimpleParser sqliteParser = new SQLiteParserSimpleParser(commonTokenStream);
-            var visitor = new SQLiteParseVisitor();
-            return visitor.Visit(sqliteParser.sql_stmt());
+            return SQLiteParseVisitor.ParseCreateTableStatement(parseString);
 
         }
     }
