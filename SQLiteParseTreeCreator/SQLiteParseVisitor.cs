@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Outercurve.SQLiteCreateTree.Nodes;
 using Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint;
 using Outercurve.SQLiteCreateTree.Nodes.TableConstraint;
@@ -10,14 +11,21 @@ namespace Outercurve.SQLiteCreateTree
 {
     public class SQLiteParseVisitor : SQLiteParserSimpleBaseVisitor<SQLiteParseTreeNode>
     {
-        public static CreateTableNode ParseCreateTableStatement(string createTableQuery)
+
+        public static SQLiteParseTreeNode ParseString(string queryString,
+            Func<SQLiteParserSimpleParser, IParseTree> startingNode)
         {
-            var inputStream = new AntlrInputStream(createTableQuery);
+            var inputStream = new AntlrInputStream(queryString);
             var sqliteLexer = new SQLiteParserSimpleLexer(inputStream);
             var commonTokenStream = new CommonTokenStream(sqliteLexer);
             var sqliteParser = new SQLiteParserSimpleParser(commonTokenStream);
             var visitor = new SQLiteParseVisitor();
-            return visitor.Visit(sqliteParser.sql_stmt()) as CreateTableNode;
+            return visitor.Visit(startingNode(sqliteParser));
+        }
+
+        public static T ParseString<T>(string queryString, Func<SQLiteParserSimpleParser, IParseTree> startingNode) where T : SQLiteParseTreeNode
+        {
+            return ParseString(queryString, startingNode) as T;
         }
 
         public override SQLiteParseTreeNode VisitSql_stmt(SQLiteParserSimpleParser.Sql_stmtContext context)
