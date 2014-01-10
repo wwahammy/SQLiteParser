@@ -56,7 +56,6 @@
   
 
   <Target Name="Test">
-	<Message Text="The configuration is $(Configuration)" Importance="high"/>
     <xunit Assembly="$(RootDir)\SQLiteParseTreeTest\bin\$(Configuration)\SQLiteParseTreeTest.dll"/>
   </Target>
 
