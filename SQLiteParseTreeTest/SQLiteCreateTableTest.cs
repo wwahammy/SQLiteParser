@@ -292,14 +292,10 @@ namespace SQLiteParseTreeTest
 
         }
 
-        
-
-
-     
 
         public SQLiteParseTreeNode RunParser(string parseString)
         {
-            return SQLiteParseVisitor.ParseCreateTableStatement(parseString);
+            return SQLiteParseVisitor.ParseString(parseString);
 
         }
     }

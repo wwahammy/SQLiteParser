@@ -23,9 +23,19 @@ namespace Outercurve.SQLiteCreateTree
             return visitor.Visit(startingNode(sqliteParser));
         }
 
+        public static SQLiteParseTreeNode ParseString(string queryString)
+        {
+            return ParseString(queryString, i => i.sql_stmt());
+        }
+
         public static T ParseString<T>(string queryString, Func<SQLiteParserSimpleParser, IParseTree> startingNode) where T : SQLiteParseTreeNode
         {
             return ParseString(queryString, startingNode) as T;
+        }
+
+        public static T ParseString<T>(string queryString) where T : SQLiteParseTreeNode
+        {
+            return ParseString<T>(queryString, i => i.sql_stmt());
         }
 
         public override SQLiteParseTreeNode VisitSql_stmt(SQLiteParserSimpleParser.Sql_stmtContext context)
