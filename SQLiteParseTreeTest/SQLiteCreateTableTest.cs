@@ -293,6 +293,48 @@ namespace SQLiteParseTreeTest
         }
 
 
+        [Fact]
+        public void TestCreateIndex()
+        {
+            const string createIndexStmt = "CREATE INDEX test1 ON test_table (column1, column2, column3);";
+            var nodes = SQLiteParseVisitor.ParseString<CreateIndexNode>(createIndexStmt);
+
+            var treeStringBuilder = new TreeStringOutputVisitor();
+            var result = nodes.Accept(treeStringBuilder);
+
+           Assert.Equal(createIndexStmt, result.ToString());
+        }
+
+
+        [Fact]
+        public void TestCreateIndexUNIQUEAndMoreComplex()
+        {
+            const string createIndexStmt = "CREATE UNIQUE INDEX test1 ON test_table (column1 ASC, column2 COLLATE i, column3);";
+            var nodes = SQLiteParseVisitor.ParseString<CreateIndexNode>(createIndexStmt);
+            var expected = new CreateIndexNode
+            {
+                IndexName = "test1",
+                TableName = "test_table",
+                IsUnique = true,
+                IndexedColumnNodes = new[]
+                {
+                    new IndexedColumnNode {Id = "column1", Order = SortOrder.Asc},
+                    new IndexedColumnNode {Id = "column2", CollationId = "i"},
+                    new IndexedColumnNode {Id = "column3"}
+                }
+            }.ToExpectedObject().AddTreeNode();
+
+            
+            expected.ShouldMatch(nodes);
+
+
+            var treeStringBuilder = new TreeStringOutputVisitor();
+            var result = nodes.Accept(treeStringBuilder);
+
+            Assert.Equal(createIndexStmt, result.ToString());
+        }
+
+
         public SQLiteParseTreeNode RunParser(string parseString)
         {
             return SQLiteParseVisitor.ParseString(parseString);

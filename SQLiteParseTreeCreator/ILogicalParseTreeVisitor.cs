@@ -25,5 +25,6 @@ namespace Outercurve.SQLiteCreateTree
         T Visit(TableConstraintCheckNode tableConstraintCheckNode);
         T Visit(TableConstraintForeignKeyNode tableConstraintForeignKeyNode);
         T Visit(ForeignKeyClauseNode foreignKeyClauseNode);
+        T Visit(CreateIndexNode createIndexNode);
     }
 }

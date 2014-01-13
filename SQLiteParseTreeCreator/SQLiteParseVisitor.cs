@@ -30,7 +30,7 @@ namespace Outercurve.SQLiteCreateTree
 
         public static T ParseString<T>(string queryString, Func<SQLiteParserSimpleParser, IParseTree> startingNode) where T : SQLiteParseTreeNode
         {
-            return ParseString(queryString, startingNode) as T;
+             return ParseString(queryString, startingNode) as T;
         }
 
         public static T ParseString<T>(string queryString) where T : SQLiteParseTreeNode
@@ -40,7 +40,15 @@ namespace Outercurve.SQLiteCreateTree
 
         public override SQLiteParseTreeNode VisitSql_stmt(SQLiteParserSimpleParser.Sql_stmtContext context)
         {
-            return context.create_table_stmt().Accept(this);
+            if (context.create_table_stmt() != null)
+            {
+                return context.create_table_stmt().Accept(this);
+            }
+            else if (context.create_index_stmt() != null)
+            {
+                return context.create_index_stmt().Accept(this);
+            }
+            throw new Exception("It's not a statement we can handle");
         }
         public override SQLiteParseTreeNode VisitCreate_table_stmt(SQLiteParserSimpleParser.Create_table_stmtContext context)
         {
@@ -70,6 +78,22 @@ namespace Outercurve.SQLiteCreateTree
             
 
             return ret;
+        }
+
+        public override SQLiteParseTreeNode VisitCreate_index_stmt(SQLiteParserSimpleParser.Create_index_stmtContext context)
+        {
+            var ret = new CreateIndexNode(context)
+            {
+                TableName = context.table_name().GetText(),
+                IndexName = context.index_name().GetText(),
+                IsUnique = context.UNIQUE() != null,
+                IfNotExists = context.EXISTS() != null,
+                DatabaseName = context.database_name() != null ? context.database_name().GetText() : null,
+                WhereExpr = context.expr() != null ? context.expr().GetText() : null,
+                IndexedColumnNodes = context.indexed_column().Select(CreateIndexedColumnNode).ToArray()
+            };
+            return ret;
+
         }
 
         public override SQLiteParseTreeNode VisitColumn_def(SQLiteParserSimpleParser.Column_defContext context)
@@ -188,22 +212,7 @@ namespace Outercurve.SQLiteCreateTree
 
         public override SQLiteParseTreeNode VisitTable_constraint__indexed_column(SQLiteParserSimpleParser.Table_constraint__indexed_columnContext context)
         {
-            var ret = new IndexedColumnNode(context) {Id = context.ID(0).GetText()};
-            if (context.COLLATE() != null)
-            {
-                ret.CollationId = context.ID(1).GetText();
-            }
-
-            if (context.ASC() != null)
-            {
-                ret.Order = SortOrder.Asc;
-            }
-            else if (context.DESC() != null)
-            {
-                ret.Order = SortOrder.Desc;
-            }
-
-            return ret;
+            return CreateIndexedColumnNode(context);
         }
 
         public override SQLiteParseTreeNode VisitTable_constraint__foreign_key_constraint(SQLiteParserSimpleParser.Table_constraint__foreign_key_constraintContext context)
@@ -385,6 +394,26 @@ namespace Outercurve.SQLiteCreateTree
         public override SQLiteParseTreeNode VisitForeign_key_clause__match(SQLiteParserSimpleParser.Foreign_key_clause__matchContext context)
         {
             var ret = new ForeignMatchNode(context) {Id = context.ID().GetText()};
+            return ret;
+        }
+
+        private IndexedColumnNode CreateIndexedColumnNode(dynamic context)
+        {
+            var ret = new IndexedColumnNode(context) { Id = context.ID(0).GetText() };
+            if (context.COLLATE() != null)
+            {
+                ret.CollationId = context.ID(1).GetText();
+            }
+
+            if (context.ASC() != null)
+            {
+                ret.Order = SortOrder.Asc;
+            }
+            else if (context.DESC() != null)
+            {
+                ret.Order = SortOrder.Desc;
+            }
+
             return ret;
         }
 

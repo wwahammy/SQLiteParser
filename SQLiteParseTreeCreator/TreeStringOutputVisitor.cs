@@ -216,6 +216,38 @@ namespace Outercurve.SQLiteCreateTree
             return sb;
         }
 
+        public StringBuilder Visit(CreateIndexNode createIndexNode)
+        {
+            var sb = new StringBuilder();
+            sb.Append("CREATE ");
+            if (createIndexNode.IsUnique)
+            {
+                sb.Append("UNIQUE ");
+            }
+            sb.Append("INDEX ");
+            if (createIndexNode.DatabaseName != null)
+            {
+                sb.Append(createIndexNode.DatabaseName).Append(".");
+            }
+
+            sb.Append(createIndexNode.IndexName);
+            sb.Append(" ON ");
+            sb.Append(createIndexNode.TableName);
+            sb.Append(" (");
+
+            sb.Append(string.Join(", ", createIndexNode.IndexedColumnNodes.Select(i => i.Accept(this))));
+            sb.Append(")");
+            if (createIndexNode.WhereExpr != null)
+            {
+                sb.Append(" WHERE ");
+                sb.Append(createIndexNode.WhereExpr);
+            }
+
+            sb.Append(";");
+
+            return sb;
+        }
+
 
         public StringBuilder Visit(ConflictClauseNode conflictClauseNode)
         {

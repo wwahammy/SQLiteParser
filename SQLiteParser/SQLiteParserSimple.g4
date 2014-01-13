@@ -20,7 +20,9 @@ public const int EOF = Eof;
  */
 
 /*sql_stmt_list: ((sql_stmt (sql_stmt SEMICOLON)*) | (sql_stmt SEMICOLON) ) EOF;*/
-sql_stmt : create_table_stmt SEMICOLON? EOF;
+sql_stmt : (create_table_stmt |create_index_stmt) SEMICOLON? EOF;
+
+create_index_stmt: CREATE UNIQUE? INDEX (IF NOT EXISTS)? (database_name PERIOD)? index_name ON table_name LP indexed_column (COMMA indexed_column)* RP (WHERE expr)?;
 	
 create_table_stmt : CREATE TEMPORARY? TABLE (IF NOT EXISTS)? (database_name PERIOD)? table_name (LP column_def (COMMA column_def)*  (COMMA table_constraint)* RP  (WITHOUT ROWID)?) | (AS select_stmt) ;
 
@@ -100,7 +102,7 @@ table_constraint__column_list : ID (COMMA ID)*;
 
 table_constraint__check: CHECK LP expr RP;
 
-
+indexed_column: ID (COLLATE ID)? (ASC | DESC)?;
 
 collation_name: ID;
 

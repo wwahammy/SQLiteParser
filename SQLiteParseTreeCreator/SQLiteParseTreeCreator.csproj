@@ -62,6 +62,7 @@
     <Compile Include="Nodes\ColumnConstraint\UniqueConstraintNode.cs" />
     <Compile Include="Nodes\ColumnDefNode.cs" />
     <Compile Include="Nodes\ConflictClauseNode.cs" />
+    <Compile Include="Nodes\CreateIndexNode.cs" />
     <Compile Include="Nodes\CreateTableNode.cs" />
     <Compile Include="Nodes\ForeignDeferrableNode.cs" />
     <Compile Include="Nodes\ForeignDeleteOrUpdateAction.cs" />
