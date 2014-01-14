@@ -144,7 +144,11 @@ namespace Outercurve.SQLiteCreateTree
         {
             var sb = new StringBuilder();
             sb.Append("UNIQUE ");
-            sb.Append(uniqueConstraintNode.ConflictClause.Accept(this));
+            if (uniqueConstraintNode.ConflictClause != null)
+            {
+                sb.Append(uniqueConstraintNode.ConflictClause.Accept(this));
+            }
+            
 
             return sb;
         }

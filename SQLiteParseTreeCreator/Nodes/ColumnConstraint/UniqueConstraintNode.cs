@@ -14,6 +14,9 @@ namespace Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint
 
         }
 
+        /// <summary>
+        /// Conflict Clause is really weird, it can be empty. We treat that as null.
+        /// </summary>
         public ConflictClauseNode ConflictClause { get; set; }
 
         public override TResult Accept<TResult>(ILogicalParseTreeVisitor<TResult> visitor)

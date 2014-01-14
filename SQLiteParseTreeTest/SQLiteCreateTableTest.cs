@@ -210,7 +210,11 @@ namespace SQLiteParseTreeTest
                     {
                         ColumnName = "LASTMODIFIEDDATE",
                         TypeNameNode = new TypeNameNode {TypeName = "text", SignedNumbers = new[] {"25"}},
-                        ColumnConstraints = new[] {new DefaultConstraintNode() { Value = "NULL"}}
+                        ColumnConstraints = new ColumnConstraintNode[]
+                        {
+                            new UniqueConstraintNode(),
+                            new DefaultConstraintNode() { Value = "NULL"}
+                        }
 
                     },
                     new ColumnDefNode
@@ -287,7 +291,7 @@ namespace SQLiteParseTreeTest
             }.ToExpectedObject().AddTreeNode();
 
             var parser = RunParser(
-                "CREATE TABLE PROJECTS(CLASSID int null, SEQNO int not null, LASTMODONNODEID text(50) not null, PREVMODONNODEID text(50) null, ISSUEID text(50) not null, OBJECTID text(50) not null, REVISIONNUM int not null, CONTAINERID text(50) not null, AUTHORID text(50) not null, CREATIONDATE text(25) null, LASTMODIFIEDDATE text(25) null, UPDATENUMBER int null, PREVREVISIONNUM int null, LASTCMD int null, LASTCMDACLVERSION int null, USERDEFINEDFIELD text(300) null, LASTMODIFIEDBYID text(50) null, NAME text(100) not null, ID text(100) null, constraint PK_PROJECTS primary key (ISSUEID, OBJECTID))");
+                "CREATE TABLE PROJECTS(CLASSID int null, SEQNO int not null, LASTMODONNODEID text(50) not null, PREVMODONNODEID text(50) null, ISSUEID text(50) not null, OBJECTID text(50) not null, REVISIONNUM int not null, CONTAINERID text(50) not null, AUTHORID text(50) not null, CREATIONDATE text(25) null, LASTMODIFIEDDATE text(25) UNIQUE null, UPDATENUMBER int null, PREVREVISIONNUM int null, LASTCMD int null, LASTCMDACLVERSION int null, USERDEFINEDFIELD text(300) null, LASTMODIFIEDBYID text(50) null, NAME text(100) not null, ID text(100) null, constraint PK_PROJECTS primary key (ISSUEID, OBJECTID))");
             expected.ShouldMatch(parser);
 
         }
