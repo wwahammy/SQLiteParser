@@ -51,6 +51,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlterTable\Action\AddColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\AddIndexCommand.cs" />
+    <Compile Include="AlterTable\Action\AlterColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\AlterTableCommand.cs" />
+    <Compile Include="AlterTable\Action\ColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\CreateColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\CreateForeignKeyCommand.cs" />
+    <Compile Include="AlterTable\Action\DropColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\DropForeignKeyCommand.cs" />
+    <Compile Include="AlterTable\Action\DropIndexCommand.cs" />
+    <Compile Include="AlterTable\Action\ISchemaBuilderCommand.cs" />
+    <Compile Include="AlterTable\Action\SchemaCommand.cs" />
+    <Compile Include="AlterTable\Action\SchemaUtils.cs" />
+    <Compile Include="AlterTable\Action\TableCommand.cs" />
+    <Compile Include="AlterTable\AlterTableAdapter.cs" />
+    <Compile Include="AlterTable\IndexWriter.cs" />
+    <Compile Include="AlterTable\NativeAlterTableProcessor.cs" />
+    <Compile Include="AlterTable\SimulatedAlterTableProcessor.cs" />
     <Compile Include="ILogicalParseTreeVisitor.cs" />
     <Compile Include="Nodes\ColumnConstraint\CheckConstraintNode.cs" />
     <Compile Include="Nodes\ColumnConstraint\CollateConstraintNode.cs" />
