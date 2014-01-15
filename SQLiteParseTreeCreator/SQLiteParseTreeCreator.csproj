@@ -69,6 +69,7 @@
     <Compile Include="AlterTable\IndexWriter.cs" />
     <Compile Include="AlterTable\NativeAlterTableProcessor.cs" />
     <Compile Include="AlterTable\SimulatedAlterTableProcessor.cs" />
+    <Compile Include="CollectionExtensions.cs" />
     <Compile Include="ILogicalParseTreeVisitor.cs" />
     <Compile Include="Nodes\ColumnConstraint\CheckConstraintNode.cs" />
     <Compile Include="Nodes\ColumnConstraint\CollateConstraintNode.cs" />

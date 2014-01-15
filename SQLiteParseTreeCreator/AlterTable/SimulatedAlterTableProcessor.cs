@@ -26,8 +26,12 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
             string tempTableName = fullTableName + "_" + Guid.NewGuid().ToString("N");
 
             
+        
 
             yield return CreateTempTable(tempTableName, fullTableName);
+            
+            
+            //modify all the references to the old table to go to the new table
 
             //drop the old table
             yield return DropTable(fullTableName);
@@ -37,13 +41,13 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
             {
                 yield return statement;
             }
+            
+            //change them all back!
 
             //drop the tempTable
             yield return DropTable(tempTableName);
-
+            
         }
-
-      
 
         private string CreateTempTable(string tempTable, string originalTable)
         {
@@ -53,6 +57,26 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
         private string DropTable(string tableName)
         {
             return String.Format("DROP TABLE {0};", tableName);
+        }
+
+        private string SavePoint(out string savepoint)
+        {
+            savepoint = "s_" + Guid.NewGuid().ToString("N");
+            return String.Format("SAVEPOINT {0};", savepoint);
+        }
+
+        private string ReleaseSavepoint(string savepoint)
+        {
+            return String.Format("RELEASE {0};", savepoint);
+        }
+        private string TurnOffReferentialIntegrity()
+        {
+            return "PRAGMA defer_foreign_keys = 1;";
+        }
+
+        private string TurnOnReferentialIntegrity()
+        {
+            return "PRAGMA defer_foreign_keys = 0;";
         }
 
         private string InsertInto(string toTable, IEnumerable<string> columnNames, string fromTable)
@@ -193,9 +217,26 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
                     keyNode.ConstraintName = foreignKeyCommand.Name;
                     keyNode.ForeignKeyClauseNode = new ForeignKeyClauseNode()
                     {
-                        
+                        TableName = foreignKeyCommand.DestTable,
+                        FieldList = foreignKeyCommand.DestColumns,
+                        ForeignDeferrable = new ForeignDeferrableNode().SetToTrulyDeferrable()
+                    };
+                    
+                    createTableNode.TableConstraints.Add(keyNode);
+                }
+                else if (alterCommand is DropForeignKeyCommand)
+                {
+                    var foreignKeyCommand = alterCommand as DropForeignKeyCommand;
+
+                    var foreignKeyDrop = createTableNode.TableConstraints.OfType<TableConstraintForeignKeyNode>()
+                        .FirstOrDefault(n => n.ConstraintName  == foreignKeyCommand.Name);
+
+                    if (foreignKeyDrop == null)
+                    {
+                        throw new Exception("No foreign key exists.");
                     }
-                    createTableNode.TableConstraints
+                    createTableNode.TableConstraints.Remove(foreignKeyDrop);
+
                 }
             }
             return createTableNode;

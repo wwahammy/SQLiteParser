@@ -30,9 +30,9 @@ column_def:  name type_name? column_constraint*;
 
 type_name : ID (LP signed_number (COMMA signed_number)* RP) ?;
 
-signed_number: (PLUS|MINUS)? numeric_literal;
+signed_number: (PLUS|MINUS)? NUMERIC_LITERAL;
 
-numeric_literal: ((INT (PERIOD INT*)?)| (PERIOD INT)) (('e'|'E') (PLUS|MINUS)? INT)?;
+
 
 
 
@@ -171,21 +171,19 @@ raise_function: RAISE LP (IGNORE | ((ROLLBACK | ABORT | FAIL) COMMA error_messag
 
 
 bind_parameter: '?' | ('?' INT) | (':' ID) | ('@' ID) | ('$' ID);
-literal_value: numeric_literal
-		| string_literal
-		| blob_literal
+literal_value: NUMERIC_LITERAL
+		| STRING_LITERAL
+		| BLOB_LITERAL
 		| NULL
 		| CURRENT_TIME
 		| CURRENT_DATE
 		| CURRENT_TIMESTAMP;
 
-string_literal  : '\'' (~'\'')* '\'' ;
-blob_literal: ('x'|'X') string_literal;
 
 binary_operator: '||'| STAR | '/' | '%' | PLUS |MINUS| '<<' | '>>' | '&' | '|' | '<' | '<=' | '>' | '>=' | '=' |'==' | '!=' | '<>' | IS | (IS NOT) | IN | LIKE |GLOB| MATCH |REGEXP | AND |OR;
 unary_operator: MINUS | PLUS | '~' | NOT;
 function_name: ID;
-error_message: string_literal;
+error_message: STRING_LITERAL;
 name: QUOTE? ID QUOTE?;
 column_alias: ID;
 column_name: ID;
@@ -195,7 +193,50 @@ index_name: ID;
 table_alias: ID;
 
 
+
 // START: tokens
+
+
+STRING_LITERAL: '\'' (~'\'')* '\'';
+NUMERIC_LITERAL: ((INT (PERIOD INT*)?)| (PERIOD INT)) (('e'|'E') (PLUS|MINUS)? INT)?;
+BLOB_LITERAL: X STRING_LITERAL;
+
+
+NULL : N U L L;
+CURRENT_TIMESTAMP : C U R R E N T '_' T I M E S T A M P;
+CURRENT_TIME: C U R R E N T '_' T I M E;
+CURRENT_DATE: C U R R E N T '_' D A T E;
+COMMIT: C O M M I T;
+INSERT: I N S E R T;
+UPDATE: U P D A T E;
+ASC: A S C;
+DESC: D E S C;
+INSTEAD: I N S T E A D;
+OF: O F;
+PRIMARY: P R I M A R Y;
+FOREIGN: F O R E I G N;
+KEY: K E Y;
+VALUE: V A L U E;
+MATCH: M A T C H;
+GLOB: G L O B;
+CAST: C A S T;
+LIKE: L I K E;
+REGEXP: R E G E X P;
+ESCAPE: E S C A P E;
+
+
+IS: I S;
+BETWEEN: B E T W E E N;
+AND: A N D;
+IN: I N;
+CASE: C A S E;
+THEN: T H E N;
+ELSE: E L S E;
+END: E N D;
+DISTINCT: D I S T I N C T;
+RAISE: R A I S E;
+OR: O R;
+CHECK: C H E C K;
 
 CREATE : C R E A T E;
 
@@ -205,9 +246,7 @@ END_C : E N D ;
 
 TRANSACTION: T R A N S A C T I O N;
 
-LP : '(';
 
-RP: ')';
 
 
 TEMPORARY : T E M P (O R A R Y)? ;
@@ -300,45 +339,13 @@ SEMICOLON : ';';
 IF : I F;
 EXISTS: E X I S T S;
 
+LP : '(';
 
+RP: ')';
 STAR: '*';
 
 QUOTE : '\''|'"';
-NULL : N U L L;
-CURRENT_TIMESTAMP : C U R R E N T '_' T I M E S T A M P;
-CURRENT_TIME: C U R R E N T '_' T I M E;
-CURRENT_DATE: C U R R E N T '_' D A T E;
-COMMIT: C O M M I T;
-INSERT: I N S E R T;
-UPDATE: U P D A T E;
-ASC: A S C;
-DESC: D E S C;
-INSTEAD: I N S T E A D;
-OF: O F;
-PRIMARY: P R I M A R Y;
-FOREIGN: F O R E I G N;
-KEY: K E Y;
-VALUE: V A L U E;
-MATCH: M A T C H;
-GLOB: G L O B;
-CAST: C A S T;
-LIKE: L I K E;
-REGEXP: R E G E X P;
-ESCAPE: E S C A P E;
 
-
-IS: I S;
-BETWEEN: B E T W E E N;
-AND: A N D;
-IN: I N;
-CASE: C A S E;
-THEN: T H E N;
-ELSE: E L S E;
-END: E N D;
-DISTINCT: D I S T I N C T;
-RAISE: R A I S E;
-OR: O R;
-CHECK: C H E C K;
 
 COMMA: ',';
 INT: DIGIT+;

@@ -18,7 +18,7 @@ namespace Outercurve.SQLiteCreateTree
             var inputStream = new AntlrInputStream(queryString);
             var sqliteLexer = new SQLiteParserSimpleLexer(inputStream);
             var commonTokenStream = new CommonTokenStream(sqliteLexer);
-            var sqliteParser = new SQLiteParserSimpleParser(commonTokenStream);
+            var sqliteParser = new SQLiteParserSimpleParser(commonTokenStream); 
             var visitor = new SQLiteParseVisitor();
             return visitor.Visit(startingNode(sqliteParser));
         }
@@ -40,6 +40,7 @@ namespace Outercurve.SQLiteCreateTree
 
         public override SQLiteParseTreeNode VisitSql_stmt(SQLiteParserSimpleParser.Sql_stmtContext context)
         {
+            
             if (context.create_table_stmt() != null)
             {
                 return context.create_table_stmt().Accept(this);
@@ -57,9 +58,7 @@ namespace Outercurve.SQLiteCreateTree
                 DatabaseName = context.database_name() == null ? null :  context.database_name().GetText(),
                 TableName = context.table_name().GetText(),
                 Temp = context.TEMPORARY() != null,
-                IfNotExists = context.IF() != null,
-               
-                
+                IfNotExists = context.IF() != null
             };
             if (context.AS() != null)
             {
@@ -340,17 +339,17 @@ namespace Outercurve.SQLiteCreateTree
                 ret.FieldList = context.foreign_key_clause__parens_field_list().foreign_key_clause__column_list().ID().Select(i => i.GetText()).ToList();
             }
 
-            if (context.foreign_key_clause__on_delete() != null)
+            if (!context.foreign_key_clause__on_delete().IsNullOrEmpty())
             {
                 ret.ForeignOnDelete =  context.foreign_key_clause__on_delete().Select(i => i.Accept(this) as ForeignOnDeleteNode).ToList();
             }
 
-            if (context.foreign_key_clause__match() != null)
+            if (!context.foreign_key_clause__match().IsNullOrEmpty())
             {
                 ret.ForeignMatch = context.foreign_key_clause__match().Select(i => i.Accept(this) as ForeignMatchNode).ToList();
             }
 
-            if (context.foreign_key_clause__on_update() != null)
+            if (!context.foreign_key_clause__on_update().IsNullOrEmpty())
             {
                 ret.ForeignOnUpdate =
                     context.foreign_key_clause__on_update().Select(i => i.Accept(this) as ForeignOnUpdateNode).ToList();

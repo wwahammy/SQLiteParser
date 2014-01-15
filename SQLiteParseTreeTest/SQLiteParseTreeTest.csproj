@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlterTableTests.cs" />
     <Compile Include="SQLiteCreateTableTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeNodeComparisonStrategy.cs" />

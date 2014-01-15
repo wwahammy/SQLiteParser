@@ -19,9 +19,17 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
         public CreateTableNode CreateTableNode { get; private set; }
         public IList<CreateIndexNode> CreateIndexNodes { get; private set; }
 
-        public string[] AlterTableStatements(AlterTableCommand command)
+        public IEnumerable<string> AlterTableStatements(AlterTableCommand command)
         {
-            
+            var native = new NativeAlterTableProcessor();
+            var result = native.CreateSqlStatements(command);
+            if (!result.Any())
+            {
+                var simulated = new SimulatedAlterTableProcessor(CreateTableNode, CreateIndexNodes);
+                result = simulated.CreateSqlStatements(command);
+            }
+
+            return result;
         }
 
 
