@@ -49,29 +49,13 @@ namespace SQLiteParseTreeTest
                 "CREATE INDEX funny_index ON TEST_TestTable (id, name);",
                 //this line expects the guid to be added
                 "DROP TABLE TEST_TestTable_;",
-            }.Select(LowerAndWhitespaceFreeString).ToArray();
+            };
 
             var adapter = new AlterTableAdapter(originalTable, originalIndices);
 
             var output = adapter.AlterTableStatements(input).Select(LowerAndWhitespaceFreeString).ToArray();
 
-            Assert.Equal(expectedFinal.Length, output.Length);
-
-            string tempTableName = "test_testtable_";
-            for (int i = 0; i < expectedFinal.Length; i++)
-            {
-
-                var testValue = expectedFinal[i];
-
-                if (i == 0)
-                {
-                    //get the guid from the output
-                    tempTableName += Regex.Match(output[i], "[0-9a-fA-F]{32}").Value;
-
-                }
-                testValue = testValue.Replace("test_testtable_", tempTableName);
-                Assert.Equal(testValue, output[i]);
-            }
+            VerifyYourStatementsAreValid(expectedFinal, output);
         }
 
         
@@ -123,23 +107,7 @@ namespace SQLiteParseTreeTest
 
             var output = adapter.AlterTableStatements(input).Select(LowerAndWhitespaceFreeString).ToArray();
 
-            Assert.Equal(expectedFinal.Length, output.Length);
-
-            string tempTableName = "test_testtable_";
-            for (int i = 0; i < expectedFinal.Length; i++)
-            {
-
-                var testValue = expectedFinal[i];
-
-                if (i == 0)
-                {
-                    //get the guid from the output
-                    tempTableName += Regex.Match(output[i], "[0-9a-fA-F]{32}").Value;
-
-                }
-                testValue = testValue.Replace("test_testtable_", tempTableName);
-                Assert.Equal(testValue, output[i]);
-            }
+            VerifyYourStatementsAreValid(expectedFinal, output);
         }
 
         [Fact]
@@ -182,6 +150,41 @@ namespace SQLiteParseTreeTest
        
         }
 
+
+        [Fact]
+        public void AlterTableAdapterIgnoresEmptyOrNullIndices()
+        {
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256));";
+            var originalIndices = new string[0];
+
+            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
+                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+
+            var input = new AlterTableCommand("TEST_TestTable");
+            input.DropColumn("name");
+            input.DropColumn("last");
+            input.CreateIndex("fun", "id");
+
+            var result = adapter.AlterTableStatements(input);
+
+
+            var expectedFinal = new[]
+            {
+                //this line expects the guid to be added
+                "CREATE TEMPORARY TABLE TEST_TestTable_ AS SELECT * FROM TEST_TestTable;",
+                "DROP TABLE TEST_TestTable;",
+                "CREATE TABLE TEST_TestTable (id INTEGER primary key autoincrement);",
+                //this line expects the guid to be added
+                "INSERT INTO TEST_TestTable (id) SELECT id FROM TEST_TestTable_;",
+                "CREATE INDEX fun ON TEST_TestTable (id);",
+                //this line expects the guid to be added
+                "DROP TABLE TEST_TestTable_;",
+            };
+
+            VerifyYourStatementsAreValid(expectedFinal, result);
+        }
+
         [Fact]
         public void DropMissingIndexShouldFail()
         {
@@ -213,6 +216,31 @@ namespace SQLiteParseTreeTest
         private string LowerAndWhitespaceFreeString(string i)
         {
             return Regex.Replace(i, @"\s+", "").ToLowerInvariant();
+        }
+
+
+        private void VerifyYourStatementsAreValid(IEnumerable<string> expected, IEnumerable<string> actual)
+        {
+            var expectedArray = expected.Select(LowerAndWhitespaceFreeString).ToArray();
+            var actualArray = actual.Select(LowerAndWhitespaceFreeString).ToArray();
+
+            Assert.Equal(expectedArray.Length, actualArray.Length);
+
+            string tempTableName = "test_testtable_";
+            for (int i = 0; i < expectedArray.Length; i++)
+            {
+
+                var testValue = expectedArray[i];
+
+                if (i == 0)
+                {
+                    //get the guid from the output
+                    tempTableName += Regex.Match(actualArray[i], "[0-9a-fA-F]{32}").Value;
+
+                }
+                testValue = testValue.Replace("test_testtable_", tempTableName);
+                Assert.Equal(testValue, actualArray[i]);
+            }
         }
 
     }

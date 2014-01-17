@@ -23,10 +23,10 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
             CreateIndexNodes = indexNodes.ToList();
         }
 
-        public AlterTableAdapter(string createTableStmt, IEnumerable<string> createTableStmts)
+        public AlterTableAdapter(string createTableStmt, IEnumerable<string> creatIndexStmts)
         {
             CreateTableNode = SQLiteParseVisitor.ParseString<CreateTableNode>(createTableStmt);
-            CreateIndexNodes = createTableStmts.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>).ToList();
+            CreateIndexNodes = creatIndexStmts.Where(i => !String.IsNullOrEmpty(i)).Select(SQLiteParseVisitor.ParseString<CreateIndexNode>).ToList();
         }
         internal CreateTableNode CreateTableNode { get; private set; }
         internal IList<CreateIndexNode> CreateIndexNodes { get; private set; }
