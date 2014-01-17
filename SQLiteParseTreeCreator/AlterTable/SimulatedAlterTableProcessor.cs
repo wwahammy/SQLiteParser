@@ -154,29 +154,36 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
                         throw new InvalidColumnException<AlterColumnCommand>(String.Format("Altering column {0} failed. No such column exists on table {1}.",alterColumn.ColumnName, alterColumn.TableName), alterColumn);
                     }
                     //modify the type name
-                    columnDef.TypeNameNode = SQLiteParseVisitor.ParseString<TypeNameNode>(alterColumn.DbType,
-                        i => i.type_name());
-
-                    //modify the default
-                    DefaultConstraintNode defaultConstraint =
-                        columnDef.ColumnConstraints.OfType<DefaultConstraintNode>().FirstOrDefault();
-                    if (defaultConstraint == null)
+                    if (!String.IsNullOrEmpty(alterColumn.DbType))
                     {
-                        //we'll create our own
 
-                        defaultConstraint = new DefaultConstraintNode
-                        {
-                            Value = DbUtils.ConvertToSqlValue(alterColumn.Default)
-                        };
-
-                        //and add it!
-                        columnDef.ColumnConstraints.Add(defaultConstraint);
+                        columnDef.TypeNameNode = SQLiteParseVisitor.ParseString<TypeNameNode>(alterColumn.DbType,
+                            i => i.type_name());
                     }
-                    else
-                    {
-                        //we modify the one that exists
 
-                        defaultConstraint.Value = DbUtils.ConvertToSqlValue(alterColumn.Default);
+                    if (alterColumn.Default != null)
+                    {
+                        //modify the default
+                        DefaultConstraintNode defaultConstraint =
+                            columnDef.ColumnConstraints.OfType<DefaultConstraintNode>().FirstOrDefault();
+                        if (defaultConstraint == null)
+                        {
+                            //we'll create our own
+
+                            defaultConstraint = new DefaultConstraintNode
+                            {
+                                Value = DbUtils.ConvertToSqlValue(alterColumn.Default)
+                            };
+
+                            //and add it!
+                            columnDef.ColumnConstraints.Add(defaultConstraint);
+                        }
+                        else
+                        {
+                            //we modify the one that exists
+
+                            defaultConstraint.Value = DbUtils.ConvertToSqlValue(alterColumn.Default);
+                        }
                     }
                 }
                 else if (alterCommand is CreateForeignKeyCommand)

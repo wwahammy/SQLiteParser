@@ -186,6 +186,69 @@ namespace SQLiteParseTreeTest
         }
 
         [Fact]
+        public void AlterTableAdapterShouldntModifyTypeWhenItIsntModified()
+        {
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256));";
+            var originalIndices = new string[0];
+
+            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
+                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+
+            var input = new AlterTableCommand("TEST_TestTable");
+            input.AlterColumn("name", i => i.WithDefault("something"));
+
+            var result = adapter.AlterTableStatements(input);
+
+
+            var expectedFinal = new[]
+            {
+                //this line expects the guid to be added
+                "CREATE TEMPORARY TABLE TEST_TestTable_ AS SELECT * FROM TEST_TestTable;",
+                "DROP TABLE TEST_TestTable;",
+                "CREATE TABLE TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) DEFAULT 'something', last TEXT(256));",
+                //this line expects the guid to be added
+                "INSERT INTO TEST_TestTable (id, name, last) SELECT id, name, last FROM TEST_TestTable_;",
+                //this line expects the guid to be added
+                "DROP TABLE TEST_TestTable_;",
+            };
+
+            VerifyYourStatementsAreValid(expectedFinal, result);
+        }
+
+
+        [Fact]
+        public void AlterTableAdapterShouldntModifyDefaultWhenItIsntModified()
+        {
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256));";
+            var originalIndices = new string[0];
+
+            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
+                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+
+            var input = new AlterTableCommand("TEST_TestTable");
+            input.AlterColumn("name", i => i.WithType("INTEGER"));
+
+            var result = adapter.AlterTableStatements(input);
+
+
+            var expectedFinal = new[]
+            {
+                //this line expects the guid to be added
+                "CREATE TEMPORARY TABLE TEST_TestTable_ AS SELECT * FROM TEST_TestTable;",
+                "DROP TABLE TEST_TestTable;",
+                "CREATE TABLE TEST_TestTable (id INTEGER primary key autoincrement, name INTEGER default NULL, last TEXT(256));",
+                //this line expects the guid to be added
+                "INSERT INTO TEST_TestTable (id, name, last) SELECT id, name, last FROM TEST_TestTable_;",
+                //this line expects the guid to be added
+                "DROP TABLE TEST_TestTable_;",
+            };
+
+            VerifyYourStatementsAreValid(expectedFinal, result);
+        }
+
+        [Fact]
         public void DropMissingIndexShouldFail()
         {
             var originalTable =
