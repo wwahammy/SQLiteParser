@@ -1,4 +1,7 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
+using Outercurve.SQLiteCreateTree.Nodes;
+using Outercurve.SQLiteCreateTree.Nodes.ColumnConstraint;
 
 namespace Outercurve.SQLiteCreateTree.AlterTable.Action {
     public class CreateColumnCommand : ColumnCommand {
@@ -54,6 +57,50 @@ namespace Outercurve.SQLiteCreateTree.AlterTable.Action {
         public new CreateColumnCommand WithType(string dbType) {
             base.WithType(dbType);
             return this;
+        }
+
+
+        internal ColumnDefNode CreateColumnDefNode()
+        {
+            var ret = new ColumnDefNode { ColumnName = this.ColumnName, ColumnConstraints = new List<ColumnConstraintNode>() };
+
+            //dialect converts DbType.Int16-64 to "INT" not "INTEGER" and only INTEGER columns can be autoincremented. This fixes that.
+            string correctType = this.IsIdentity ? "INTEGER" : this.DbType;
+
+            ret.TypeNameNode = SQLiteParseVisitor.ParseString<TypeNameNode>(correctType, i => i.type_name());
+
+            //not quite right but should work
+
+            if (this.IsIdentity || this.IsPrimaryKey)
+            {
+                var primKey = new PrimaryKeyConstraintNode();
+                if (this.IsIdentity)
+                {
+                    primKey.AutoIncrement = true;
+                }
+                ret.ColumnConstraints.Add(primKey);
+            }
+
+            if (this.Default != null)
+            {
+                ret.ColumnConstraints.Add(new DefaultConstraintNode { Value = DbUtils.ConvertToSqlValue(Default) });
+            }
+
+            if (this.IsNotNull)
+            {
+                ret.ColumnConstraints.Add(new NotNullConstraintNode());
+            }
+            else if (this.Default == null && !this.IsPrimaryKey && !this.IsUnique)
+            {
+                ret.ColumnConstraints.Add(new DefaultConstraintNode { Value = "NULL" });
+            }
+
+            if (this.IsUnique)
+            {
+                ret.ColumnConstraints.Add(new UniqueConstraintNode());
+            }
+
+            return ret;
         }
 
     }

@@ -18,9 +18,15 @@ namespace Outercurve.SQLiteCreateTree
             var inputStream = new AntlrInputStream(queryString);
             var sqliteLexer = new SQLiteParserSimpleLexer(inputStream);
             var commonTokenStream = new CommonTokenStream(sqliteLexer);
-            var sqliteParser = new SQLiteParserSimpleParser(commonTokenStream); 
+            var sqliteParser = new SQLiteParserSimpleParser(commonTokenStream);
+            var getStartingNode = startingNode(sqliteParser);
+            if (sqliteParser.NumberOfSyntaxErrors != 0)
+            {
+                throw new ParseException(String.Format("There were {0} parse errors.", sqliteParser.NumberOfSyntaxErrors));    
+            }
+
             var visitor = new SQLiteParseVisitor();
-            return visitor.Visit(startingNode(sqliteParser));
+            return visitor.Visit(getStartingNode);
         }
 
         public static SQLiteParseTreeNode ParseString(string queryString)
@@ -45,7 +51,7 @@ namespace Outercurve.SQLiteCreateTree
             {
                 return context.create_table_stmt().Accept(this);
             }
-            else if (context.create_index_stmt() != null)
+            if (context.create_index_stmt() != null)
             {
                 return context.create_index_stmt().Accept(this);
             }
@@ -113,7 +119,7 @@ namespace Outercurve.SQLiteCreateTree
 
         public override SQLiteParseTreeNode VisitTable_constraint(SQLiteParserSimpleParser.Table_constraintContext context)
         {
-            TableConstraintNode ret = null;
+            TableConstraintNode ret;
 
             if (context.table_constraint__index_clause() != null)
             {
@@ -140,7 +146,7 @@ namespace Outercurve.SQLiteCreateTree
         {
             var ret = new TypeNameNode(context)
             {
-                TypeName = context.ID().GetText(), 
+                TypeName = context.id().GetText(), 
                 SignedNumbers = context.signed_number().Select( i => i.GetText()).ToList()
             };
             return ret;
@@ -220,7 +226,7 @@ namespace Outercurve.SQLiteCreateTree
             {
                 FieldNames = context.table_constraint__parens_field_list()
                     .foreign_key_clause__column_list()
-                    .ID()
+                    .id()
                     .Select(i => i.GetText())
                     .ToList(),
                 ForeignKeyClauseNode = context.foreign_key_clause().Accept(this) as ForeignKeyClauseNode
@@ -235,13 +241,11 @@ namespace Outercurve.SQLiteCreateTree
 
         public override SQLiteParseTreeNode VisitColumn_constraint(SQLiteParserSimpleParser.Column_constraintContext context)
         {
-            ColumnConstraintNode ret = null;
-
-            ret = context.column_constraint__postfix().Accept(this) as ColumnConstraintNode;
+            var ret = context.column_constraint__postfix().Accept(this) as ColumnConstraintNode;
 
 
-            if (context.ID() != null)
-                    ret.Name = context.ID().GetText();
+            if (ret != null && context.id() != null )
+                    ret.Name = context.id().GetText();
 
 
             return ret;
@@ -256,7 +260,7 @@ namespace Outercurve.SQLiteCreateTree
                     ConflictClause = context.conflict_clause().Accept(this) as ConflictClauseNode
                 };
             }
-            else if (context.PRIMARY() != null)
+            if (context.PRIMARY() != null)
             {
                 var ret = new PrimaryKeyConstraintNode(context);
                 if (context.ASC() != null)
@@ -277,21 +281,18 @@ namespace Outercurve.SQLiteCreateTree
 
                 return ret;
             }
-
-            else if (context.UNIQUE() != null)
+            if (context.UNIQUE() != null)
             {
                 return new UniqueConstraintNode(context)
                 {
                     ConflictClause = context.conflict_clause().Accept(this) as ConflictClauseNode
                 };
             }
-
-            else if (context.CHECK_C() != null)
+            if (context.CHECK_C() != null)
             {
                 return new CheckConstraintNode(context) {Expr = context.expr().GetText()};
             }
-
-            else if (context.DEFAULT() != null )
+            if (context.DEFAULT() != null )
             {
                 var ret = new DefaultConstraintNode(context);
                 if (context.signed_number() != null)
@@ -311,18 +312,18 @@ namespace Outercurve.SQLiteCreateTree
 
                 return ret;
             }
-            else if (context.NULL() != null)
+            if (context.NULL() != null)
             {
                 //it's a default null but sqlite allows it and says it's null
                 var ret = new DefaultConstraintNode(context) {Value = "NULL"};
                 return ret;
             }
 
-            else if (context.COLLATE() != null)
+            if (context.COLLATE() != null)
             {
                 return new CollateConstraintNode(context) {CollationName = context.collation_name().GetText()};
             }
-            else if (context.foreign_key_clause() != null)
+            if (context.foreign_key_clause() != null)
             {
                 return context.foreign_key_clause().Accept(this) as ColumnConstraintNode;
             }
@@ -336,13 +337,14 @@ namespace Outercurve.SQLiteCreateTree
 
             if (context.foreign_key_clause__parens_field_list() != null)
             {
-                ret.FieldList = context.foreign_key_clause__parens_field_list().foreign_key_clause__column_list().ID().Select(i => i.GetText()).ToList();
+                ret.FieldList = context.foreign_key_clause__parens_field_list().foreign_key_clause__column_list().id().Select(i => i.GetText()).ToList();
             }
 
             if (!context.foreign_key_clause__on_delete().IsNullOrEmpty())
             {
                 ret.ForeignOnDelete =  context.foreign_key_clause__on_delete().Select(i => i.Accept(this) as ForeignOnDeleteNode).ToList();
             }
+            
 
             if (!context.foreign_key_clause__match().IsNullOrEmpty())
             {
@@ -379,7 +381,7 @@ namespace Outercurve.SQLiteCreateTree
         public override SQLiteParseTreeNode VisitForeign_key_clause__deferrable(SQLiteParserSimpleParser.Foreign_key_clause__deferrableContext context)
         {
             var ret = new ForeignDeferrableNode(context);
-            if (context.NOT() != null)
+            if (context.NOT() == null)
                 ret.IsDeferrable = true;
 
             if (context.IMMEDIATE() != null)
@@ -392,16 +394,16 @@ namespace Outercurve.SQLiteCreateTree
 
         public override SQLiteParseTreeNode VisitForeign_key_clause__match(SQLiteParserSimpleParser.Foreign_key_clause__matchContext context)
         {
-            var ret = new ForeignMatchNode(context) {Id = context.ID().GetText()};
+            var ret = new ForeignMatchNode(context) {Id = context.id().GetText()};
             return ret;
         }
 
         private IndexedColumnNode CreateIndexedColumnNode(dynamic context)
         {
-            var ret = new IndexedColumnNode(context) { Id = context.ID(0).GetText() };
+            var ret = new IndexedColumnNode(context) { Id = context.id(0).GetText() };
             if (context.COLLATE() != null)
             {
-                ret.CollationId = context.ID(1).GetText();
+                ret.CollationId = context.id(1).GetText();
             }
 
             if (context.ASC() != null)
@@ -422,20 +424,20 @@ namespace Outercurve.SQLiteCreateTree
             {
                 return ForeignDeleteOrUpdateAction.SetNull;
             }
-            else if (context.DEFAULT() != null)
+            if (context.DEFAULT() != null)
             {
                 return ForeignDeleteOrUpdateAction.SetDefault;
             }
 
-            else if (context.CASCADE() != null)
+            if (context.CASCADE() != null)
             {
-               return  ForeignDeleteOrUpdateAction.Cascade;
+                return  ForeignDeleteOrUpdateAction.Cascade;
             }
-            else if (context.RESTRICT() != null)
+            if (context.RESTRICT() != null)
             {
                 return ForeignDeleteOrUpdateAction.Restrict;
             }
-            else if (context.NO() != null)
+            if (context.NO() != null)
             {
                 return ForeignDeleteOrUpdateAction.NoAction;
             }

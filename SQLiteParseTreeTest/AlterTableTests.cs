@@ -51,8 +51,7 @@ namespace SQLiteParseTreeTest
                 "DROP TABLE TEST_TestTable_;",
             }.Select(LowerAndWhitespaceFreeString).ToArray();
 
-            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
-                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+            var adapter = new AlterTableAdapter(originalTable, originalIndices);
 
             var output = adapter.AlterTableStatements(input).Select(LowerAndWhitespaceFreeString).ToArray();
 
@@ -101,76 +100,15 @@ namespace SQLiteParseTreeTest
             input.DropForeignKey("TEST_FK");
             input.CreateForeignKey("TEST_FK2", new []{"id", "last"}, "SOME_OTHERTABLE", new []{"something", "else"});
 
-#if false
-            var expectedObject = new
-            {
-                Name = "TEST_TestTable",
-                TableCommands = new List<object>
-                {
-                    //funny index
-                    new 
-                    {
-                       Name= "funny_index",
-                       TableName = "TEST_TestTable",
-                       ColumnNames = new object[] { "id", "name"}
-                    },
-                    //dropindex
-
-                    new
-                    {
-                        name= "some_index",
-                        TableName ="TEST_TestTable"
-                    },
-
-                    new
-                    {
-                        TableName = "TEST_TestTable",
-                        ColumnName = "add_column",
-                        DbType = "TINYINT",
-                    },
-                    new
-                    {
-                        TableName = "TEST_TestTable",
-                        ColumnName = "last"
-                    },
-
-                     new
-                    {
-                        TableName = "TEST_TestTable",
-                        ColumnName = "name",
-                        DbType = "Integer",
-                        Default = "0"
-                    },
-                    new
-                    {
-                        Name = "TEST_FK",
-                        TableName = "TEST_TestTable"
-                    },
-
-                    new
-                    {
-                        TableName = "TEST_TestTable",
-                        Name="TEST_FK2",
-                        DestColumns =  new [] {"id", "last"},
-                        DestTable = "SOME_OTHERTABLE",
-                        SrcColumns = new []{"id", "last"}
-                    }
-
-
-                }
-            }.ToExpectedObject();
-
-            expectedObject.ShouldMatch(input);
-#endif
 
             var expectedFinal = new[]
             {
                 //this line expects the guid to be added
                 "CREATE TEMPORARY TABLE TEST_TestTable_ AS SELECT * FROM TEST_TestTable;",
                 "DROP TABLE TEST_TestTable;",
-                "CREATE TABLE TEST_TestTable (id INTEGER primary key autoincrement, name INTEGER default 0, add_column TINYINT default NULL " +
-                    "CONSTRAINT KEEP_FK  FOREIGN KEY (temp, id) REFERENCES FAKE_TABLE (temp, id) DEFERRABLE INIITALLY DEFERRED, "+
-                    "CONSTRAINT TEST_FK2  FOREIGN KEY (id, last) REFERENCES SOME_OTHERTABLE (something, else) DEFERRABLE INIITALLY DEFERRED);",
+                "CREATE TABLE TEST_TestTable (id INTEGER primary key autoincrement, name INTEGER default 0, add_column TINYINT default NULL, " +
+                    "CONSTRAINT KEEP_FK  FOREIGN KEY (temp, id) REFERENCES FAKE_TABLE (temp, id) DEFERRABLE INITIALLY DEFERRED, "+
+                    "CONSTRAINT TEST_FK2  FOREIGN KEY (id, last) REFERENCES SOME_OTHERTABLE (something, else) DEFERRABLE INITIALLY DEFERRED);",
                 //this line expects the guid to be added
                 "INSERT INTO TEST_TestTable (id, name) SELECT id, name FROM TEST_TestTable_;",
                 "CREATE INDEX name_index ON TEST_TestTable (name);",
@@ -204,14 +142,72 @@ namespace SQLiteParseTreeTest
             }
         }
 
+        [Fact]
         public void DropMissingColumnShouldFail()
         {
             //var origin
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256));";
+            var originalIndices = new string[0];
+
+            var input = new AlterTableCommand("TEST_TestTable");
+            input.DropColumn("fake_column");
+
+            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
+                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+
+            Assert.Throws<InvalidColumnException<DropColumnCommand>>(() => adapter.AlterTableStatements(input).ToArray());
+
+
         }
 
+        [Fact]
+        public void AlterMissingColumnShouldFail()
+        {
+       
+            //var origin
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256));";
+            var originalIndices = new string[0];
+
+            var input = new AlterTableCommand("TEST_TestTable");
+            input.AlterColumn("fake_column", i => i.WithType("fake"));
+
+            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
+                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+
+            Assert.Throws<InvalidColumnException<AlterColumnCommand>>(() => adapter.AlterTableStatements(input).ToArray());
+
+
+       
+        }
+
+        [Fact]
         public void DropMissingIndexShouldFail()
         {
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256));";
+            var originalIndices = new string[0];
 
+            var input = new AlterTableCommand("TEST_TestTable");
+            input.DropIndex("fake_index");
+            input.DropColumn("name");
+
+            var adapter = new AlterTableAdapter(SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable),
+                originalIndices.Select(SQLiteParseVisitor.ParseString<CreateIndexNode>));
+
+            Assert.Throws<InvalidIndexException>(() => adapter.AlterTableStatements(input).ToArray());
+
+        }
+
+        [Fact]
+        public void ParseStringWithParseErrorsFails()
+        {
+            // missing one right parens at the end
+            var originalTable =
+                "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT(40) NULL, last TEXT(256)";
+
+            Assert.Throws<ParseException>(() => SQLiteParseVisitor.ParseString<CreateTableNode>(originalTable));
         }
 
         private string LowerAndWhitespaceFreeString(string i)

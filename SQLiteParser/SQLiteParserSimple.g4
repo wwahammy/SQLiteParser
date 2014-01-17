@@ -24,11 +24,11 @@ sql_stmt : (create_table_stmt |create_index_stmt) SEMICOLON? EOF;
 
 create_index_stmt: CREATE UNIQUE? INDEX (IF NOT EXISTS)? (database_name PERIOD)? index_name ON table_name LP indexed_column (COMMA indexed_column)* RP (WHERE expr)?;
 	
-create_table_stmt : CREATE TEMPORARY? TABLE (IF NOT EXISTS)? (database_name PERIOD)? table_name (LP column_def (COMMA column_def)*  (COMMA table_constraint)* RP  (WITHOUT ROWID)?) | (AS select_stmt) ;
+create_table_stmt : CREATE TEMPORARY? TABLE (IF NOT EXISTS)? (database_name PERIOD)? table_name (LP column_def (COMMA column_def)*  (COMMA table_constraint)* RP  (WITHOUT ROWid)?) | (AS select_stmt) ;
 
 column_def:  name type_name? column_constraint*;
 
-type_name : ID (LP signed_number (COMMA signed_number)* RP) ?;
+type_name : id (LP signed_number (COMMA signed_number)* RP) ?;
 
 signed_number: (PLUS|MINUS)? NUMERIC_LITERAL;
 
@@ -36,7 +36,7 @@ signed_number: (PLUS|MINUS)? NUMERIC_LITERAL;
 
 
 
-column_constraint : (CONSTRAINT ID)? column_constraint__postfix;
+column_constraint : (CONSTRAINT id)? column_constraint__postfix;
 
 column_constraint__postfix : NOT NULL conflict_clause
     {
@@ -75,14 +75,14 @@ foreign_key_clause: REFERENCES table_name foreign_key_clause__parens_field_list?
 
 
 foreign_key_clause__parens_field_list : LP foreign_key_clause__column_list RP;
-foreign_key_clause__column_list : ID (COMMA ID)*;
+foreign_key_clause__column_list : id (COMMA id)*;
 
 
 
 foreign_key_clause__deferrable: NOT? DEFERRABLE ((INITIALLY DEFERRED)| (INITIALLY IMMEDIATE))?;
 foreign_key_clause__on_delete: ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION);
 foreign_key_clause__on_update: ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION);
-foreign_key_clause__match: MATCH ID;
+foreign_key_clause__match: MATCH id;
 
 conflict_clause: (ON CONFLICT (ROLLBACK| ABORT|FAIL|IGNORE|REPLACE))?;
 
@@ -93,18 +93,18 @@ table_constraint: (CONSTRAINT name)? (table_constraint__index_clause | table_con
 table_constraint__index_clause : ((PRIMARY KEY) | UNIQUE) table_constraint__indexed_columns conflict_clause;
 
 table_constraint__indexed_columns: LP table_constraint__indexed_column (COMMA table_constraint__indexed_column)? RP;
-table_constraint__indexed_column: ID (COLLATE ID)? (ASC | DESC)?;
+table_constraint__indexed_column: id (COLLATE id)? (ASC | DESC)?;
 
 table_constraint__foreign_key_constraint: FOREIGN KEY table_constraint__parens_field_list foreign_key_clause;
 
 table_constraint__parens_field_list : LP foreign_key_clause__column_list RP;
-table_constraint__column_list : ID (COMMA ID)*;
+table_constraint__column_list : id (COMMA id)*;
 
 table_constraint__check: CHECK LP expr RP;
 
-indexed_column: ID (COLLATE ID)? (ASC | DESC)?;
+indexed_column: id (COLLATE id)? (ASC | DESC)?;
 
-collation_name: ID;
+collation_name: id;
 
 
 //holy cow
@@ -156,7 +156,7 @@ ordering_term: expr (COLLATE collation_name)? (ASC | DESC)?;
 compound_operator: (UNION ALL?)| INTERSECT | EXCEPT;
 update_stmt: UPDATE (OR ROLLBACK|ABORT|FAIL|REPLACE|IGNORE)? qualified_table_name SET column_name EQ expr (COMMA column_name EQ expr)* (WHERE expr)? update_stmt__limit_ending?;
 update_stmt__limit_ending: (ORDER BY ordering_term (COMMA ordering_term))? LIMIT expr ((OFFSET| COMMA) expr)?;
-qualified_table_name: (database_name PERIOD)? table_name ((INDEXED BY ID)| (NOT INDEXED))?;
+qualified_table_name: (database_name PERIOD)? table_name ((INDEXED BY id)| (NOT INDEXED))?;
 
 vacuum_stmt: VACUUM;
 
@@ -170,7 +170,7 @@ expr__function_expr_params: ( STAR | (DISTINCT? expr (COMMA expr)*))?;
 raise_function: RAISE LP (IGNORE | ((ROLLBACK | ABORT | FAIL) COMMA error_message)) RP;
 
 
-bind_parameter: '?' | ('?' INT) | (':' ID) | ('@' ID) | ('$' ID);
+bind_parameter: '?' | ('?' INT) | (':' id) | ('@' id) | ('$' id);
 literal_value: NUMERIC_LITERAL
 		| STRING_LITERAL
 		| BLOB_LITERAL
@@ -182,17 +182,17 @@ literal_value: NUMERIC_LITERAL
 
 binary_operator: '||'| STAR | '/' | '%' | PLUS |MINUS| '<<' | '>>' | '&' | '|' | '<' | '<=' | '>' | '>=' | '=' |'==' | '!=' | '<>' | IS | (IS NOT) | IN | LIKE |GLOB| MATCH |REGEXP | AND |OR;
 unary_operator: MINUS | PLUS | '~' | NOT;
-function_name: ID;
+function_name: id;
 error_message: STRING_LITERAL;
-name: QUOTE? ID QUOTE?;
-column_alias: ID;
-column_name: ID;
-database_name: ID; 
-table_name: ID;
-index_name: ID;
-table_alias: ID;
+name: QUOTE? id QUOTE?;
+column_alias: id;
+column_name: id;
+database_name: id; 
+table_name: id;
+index_name: id;
+table_alias: id;
 
-
+id: WITHOUT|WHERE|WHEN |VIEW |VALUE|VACUUM|USING|UPDATE|UNIQUE |UNION|TRIGGER |TRANSACTION|THEN|TEMPORARY |TABLE |SET|SELECT |ROWID|ROW|ROLLBACK|RESTRICT|REPLACE|REGEXP|REFERENCES |RAISE|PRIMARY|OUTER|ORDER|OR|ON |OFFSET|OF|NULL |NOT_NULL |NOT|NO|NATURAL|MATCH|LIMIT|LIKE|LEFT|KEY|JOIN|IS|INTERSECT|INSTEAD|INSERT|INNER|INITIALLY|INDEXED|INDEX |IN|IMMEDIATE|IGNORE|IF |HAVING|GROUP|GLOB|FROM|FOREIGN_KEY |FOREIGN|FOR|FAIL|EXISTS|EXCEPT|ESCAPE|END_C |END|ELSE|EACH|DROP |DISTINCT|DESC|DELETE|DEFERRED|DEFERRABLE|DEFAULT |CURRENT_TIMESTAMP |CURRENT_TIME|CURRENT_DATE|CREATE |CONSTRAINT |CONFLICT|COMMIT|COLLATE|CHECK_C |CHECK|CAST|CASE|CASCADE|BY|BETWEEN|BEGIN_C |BEFORE|AUTOINCREMENT |ASC|AS |AND|ALL|AFTER|ACTION|ABORT | ID;
 
 // START: tokens
 
@@ -312,7 +312,7 @@ IMMEDIATE: I M M E D I A T E;
 UNIQUE : U N I Q U E;
 ALL: A L L;
 BY: B Y;
-EQ: '=';
+
 EXCEPT: E X C E P T;
 FROM: F R O M;
 GROUP: G R O U P;
@@ -331,13 +331,13 @@ UNION: U N I O N;
 USING: U S I N G;
 WHERE: W H E R E;
 VACUUM: V A C U U M;
-
-
+IF : I F;
+EXISTS: E X I S T S;
+EQ: '=';
 SEMICOLON : ';';
 
 
-IF : I F;
-EXISTS: E X I S T S;
+
 
 LP : '(';
 

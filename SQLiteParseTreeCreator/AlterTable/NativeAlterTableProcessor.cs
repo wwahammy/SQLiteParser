@@ -26,18 +26,21 @@ namespace Outercurve.SQLiteCreateTree.AlterTable
             {
                 if (alterCommand is AddColumnCommand)
                 {
-                    yield return String.Format("ALTER TABLE {0} ADD COLUMN {1};", command.Name, AlterTableAdapter.CreateColumnNode(alterCommand as AddColumnCommand).Accept(visitor));
+                    var addColumn = alterCommand as AddColumnCommand;
+                    yield return
+                        StatementUtil.AddColumn(command.Name,
+                            addColumn.CreateColumnDefNode().Accept(visitor).ToString());
                 }
                 else if (alterCommand is AddIndexCommand)
                 {
                     var addIndexCommand = alterCommand as AddIndexCommand;
 
-                    yield return IndexWriter.AddIndex(addIndexCommand.IndexName, addIndexCommand.TableName, addIndexCommand.ColumnNames);
+                    yield return StatementUtil.AddIndex(addIndexCommand.IndexName, addIndexCommand.TableName, addIndexCommand.ColumnNames);
                 }
                 else if (alterCommand is DropIndexCommand)
                 {
                     var dropIndexCommand = alterCommand as DropIndexCommand;
-                    yield return IndexWriter.DropIndex(dropIndexCommand.IndexName);
+                    yield return StatementUtil.DropIndex(dropIndexCommand.IndexName);
                 }
             }
         }

@@ -23,7 +23,6 @@ namespace Outercurve.SQLiteCreateTree
             if (typeNameNode.SignedNumbers != null && typeNameNode.SignedNumbers.Any())
             {
                 sb.Append("(");
-                // I'm Lazy
                 sb.Append(string.Join(", ", typeNameNode.SignedNumbers));
                 sb.Append(") ");
             }
@@ -186,29 +185,34 @@ namespace Outercurve.SQLiteCreateTree
 
             if (foreignKeyClauseNode.FieldList != null)
             {
-                foreach (var field in foreignKeyClauseNode.FieldList)
+                sb.Append("(");
+                sb.Append(string.Join(", ", foreignKeyClauseNode.FieldList));
+                sb.Append(")");
+            }
+            if (foreignKeyClauseNode.ForeignOnDelete != null)
+            {
+                foreach (var delete in foreignKeyClauseNode.ForeignOnDelete)
                 {
                     sb.Append(" ");
-                    sb.Append(field);
+                    sb.Append(delete.Accept(this));
+                }
+            }
+            if (foreignKeyClauseNode.ForeignOnUpdate != null)
+            {
+                foreach (var update in foreignKeyClauseNode.ForeignOnUpdate)
+                {
+                    sb.Append(" ");
+                    sb.Append(update.Accept(this));
                 }
             }
 
-            foreach (var delete in foreignKeyClauseNode.ForeignOnDelete)
+            if (foreignKeyClauseNode.ForeignMatch != null)
             {
-                sb.Append(" ");
-                sb.Append(delete.Accept(this));
-            }
-
-            foreach (var update in foreignKeyClauseNode.ForeignOnUpdate)
-            {
-                sb.Append(" ");
-                sb.Append(update.Accept(this));
-            }
-
-            foreach (var match in foreignKeyClauseNode.ForeignMatch)
-            {
-                sb.Append(" ");
-                sb.Append(match.Accept(this));
+                foreach (var match in foreignKeyClauseNode.ForeignMatch)
+                {
+                    sb.Append(" ");
+                    sb.Append(match.Accept(this));
+                }
             }
 
             if (foreignKeyClauseNode.ForeignDeferrable != null)
