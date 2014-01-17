@@ -296,6 +296,46 @@ namespace SQLiteParseTreeTest
 
         }
 
+        [Fact]
+
+        public void TestWithFKConstraint()
+        {
+            var expected = new CreateTableNode
+            {
+                TableName = "c15",
+                ColumnDefinitions = new[]
+                {
+                    new ColumnDefNode
+                    {
+                        ColumnName = "x",
+
+                    },
+                    new ColumnDefNode
+                    {
+                        ColumnName = "y",
+
+                    }
+
+                  
+                },
+                TableConstraints = new TableConstraintNode[]
+                {
+                    new TableConstraintForeignKeyNode
+                    {
+                        FieldNames = new List<string>() { "x", "y"},
+                        ForeignKeyClauseNode = new ForeignKeyClauseNode()
+                        {
+                            TableName = "p5",
+                            FieldList = new List<string>() { "b","c"}
+                        }
+                    }
+                },
+            }.ToExpectedObject().AddTreeNode();
+
+            var parser = RunParser("CREATE TABLE c15 (x, y, FOREIGN KEY(x,y) REFERENCES p5(b,c));");
+             expected.ShouldMatch(parser);
+        }
+
 
         [Fact]
         public void TestCreateIndex()

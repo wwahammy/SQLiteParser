@@ -15,6 +15,12 @@ namespace Outercurve.SQLiteCreateTree.Nodes
         }
 
 
+        public ForeignDeferrableNode SetToTrulyDeferrable()
+        {
+            IsDeferrable = true;
+            InitiallyImmediate = false;
+            return this;
+        }
         /// <summary>
         /// NOT? 
         /// </summary>

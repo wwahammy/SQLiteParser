@@ -51,7 +51,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlterTable\Action\AddColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\AddIndexCommand.cs" />
+    <Compile Include="AlterTable\Action\AlterColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\AlterTableCommand.cs" />
+    <Compile Include="AlterTable\Action\ColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\CreateColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\CreateForeignKeyCommand.cs" />
+    <Compile Include="AlterTable\Action\DropColumnCommand.cs" />
+    <Compile Include="AlterTable\Action\DropForeignKeyCommand.cs" />
+    <Compile Include="AlterTable\Action\DropIndexCommand.cs" />
+    <Compile Include="AlterTable\Action\ISchemaBuilderCommand.cs" />
+    <Compile Include="AlterTable\Action\SchemaCommand.cs" />
+    <Compile Include="AlterTable\Action\SchemaUtils.cs" />
+    <Compile Include="AlterTable\Action\TableCommand.cs" />
+    <Compile Include="AlterTable\AlterTableAdapter.cs" />
+    <Compile Include="AlterTable\NativeAlterTableProcessor.cs" />
+    <Compile Include="AlterTable\SimulatedAlterTableProcessor.cs" />
+    <Compile Include="AlterTable\StatementCreationUtil.cs" />
+    <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="DbUtils.cs" />
     <Compile Include="ILogicalParseTreeVisitor.cs" />
+    <Compile Include="InvalidColumnException.cs" />
+    <Compile Include="InvalidForeignKeyException.cs" />
+    <Compile Include="InvalidIndexException.cs" />
     <Compile Include="Nodes\ColumnConstraint\CheckConstraintNode.cs" />
     <Compile Include="Nodes\ColumnConstraint\CollateConstraintNode.cs" />
     <Compile Include="Nodes\ColumnConstraint\ColumnConstraintNode.cs" />
@@ -76,6 +99,7 @@
     <Compile Include="Nodes\TableConstraint\TableConstraintForeignKeyNode.cs" />
     <Compile Include="Nodes\TableConstraint\TableConstraintNode.cs" />
     <Compile Include="Nodes\TypeNameNode.cs" />
+    <Compile Include="ParseException.cs" />
     <Compile Include="SQLiteParseTreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLiteParseVisitor.cs" />
