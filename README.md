@@ -1,12 +1,8 @@
-SQLite CREATE Statement Parser for .Net	{#welcome}
+SQLite CREATE Statement Parser for .Net
 =====================
 SQLite CREATE Statement Parser for .Net is a library for parsing and manipulating SQLite CREATE TABLE and CREATE INDEX statements and simulate ALTER TABLE support for SQLite.
 
 [![Build status](https://ci.appveyor.com/api/projects/status?id=cpv09gigti5q7694)](https://ci.appveyor.com/project/sqliteparser)
-
-Table of Contents
--------
-[TOC]
 
 Features
 --------
@@ -102,12 +98,12 @@ The second library, Outercurve.SQLiteTreeCreator (individually buildable from SQ
 - The alter table simulator will likely fail to create usable statements if your foreign keys are not set to "DEFERRABLE INITIALLY DEFERRED." I think there's a way to get around this by turning off the SQLite foreign key support, modifying the tables, turn foreign key support back on and then raise a SQLite error if the foreign keys aren't valid anymore. Just didn't have time to work it out.
 
 ## FAQ:
-**Q: Why not connect directly to a SQLite DB and run the statements?**
-A: There are lots of different ways to connect to a DB. The current design allows you flexibility to use any DB layer.
-**Q: Why are the two libraries in different solutions?**
-A: The ANTLR4 MSBuild tasks create intermediate C# files for the grammar classes in Outercurve.SQLiteParser. VS Intellisense wasn't picking them up which meant we'd lose all Intellisense support while working on Outercurve.SQLParseTreeCreator. There may be a work around but I never found it.
-**Q: Why no Fluent API for CREATE TABLE statements? **
-A: Honestly, I just never had time to work it through. That said, I don't think it would be very difficult to do.
+**Q: Why not connect directly to a SQLite DB and run the statements?**    
+A: There are lots of different ways to connect to a DB. The current design allows you flexibility to use any DB layer.    
+**Q: Why are the two libraries in different solutions?**    
+A: The ANTLR4 MSBuild tasks create intermediate C# files for the grammar classes in Outercurve.SQLiteParser. VS Intellisense wasn't picking them up which meant we'd lose all Intellisense support while working on Outercurve.SQLParseTreeCreator. There may be a work around but I never found it.    
+**Q: Why no Fluent API for CREATE TABLE statements? **    
+A: Honestly, I just never had time to work it through. That said, I don't think it would be very difficult to do.    
 
   [1]: http://sqlite.org
   [2]: http://www.sqlite.org/lang_altertable.html
