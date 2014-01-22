@@ -5,8 +5,8 @@
     <RootDir Condition="'$(RootDir)'==''">.</RootDir>
     <NuGetExe Condition="'$(NuGetExe)'==''">$(RootDir)\.nuget\nuget.exe</NuGetExe>
     <Author Condition="'$(Author)' == ''">Outercurve Foundation</Author>
-    <ProjectUrl Condition="'$(ProjectUrl)'==''">http://www.outercurve.org</ProjectUrl>
-    <Version Condition="'$(Version)'==''">0.1.0-prerelease</Version>
+    <ProjectUrl Condition="'$(ProjectUrl)'==''">https://github.com/ericschultz/SQLiteParser</ProjectUrl>
+    <Version Condition="'$(Version)'==''">1.1.0-prerelease</Version>
 	<Version Condition="'$(Appveyor_ProjectVersion)'!= ''">$(Appveyor_ProjectVersion)-prerelease</Version>
 	
   </PropertyGroup>
