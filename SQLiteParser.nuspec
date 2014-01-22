@@ -3,16 +3,14 @@
   <metadata>
     <id>Outercurve.SQLiteParser</id>
     <version>$version$</version>
-    <title>SQLiteParser for .Net</title>
+    <title>SQLite CREATE Statement Parser for .Net</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>http://something.com</licenseUrl>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>$projecturl$</projectUrl>
-    <iconUrl>http://something.com</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Works on </description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright 2013</copyright>
+    <description>SQLite CREATE Statement Parser for .Net is a library for parsing and manipulating SQLite CREATE TABLE and CREATE INDEX statements and simulate ALTER TABLE support for SQLite.</description>
+    <copyright>Copyright 2014</copyright>
     <dependencies>
       <dependency id="Antlr4" version="4.1.0-alpha003"/>
       <dependency id="Antlr4.Runtime" version="4.1.0-alpha003"/>
