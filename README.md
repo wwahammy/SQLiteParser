@@ -79,7 +79,7 @@ SQLiteParseTreeNode statementNodes = SQLiteParseVisitor.ParseString(createTable)
 ```c#
 string parseOnlyColumnDef = "id INTEGER primary key autoincrement";
 
-SQLiteParseTreeNode statementNode = SQLiteParseVisitor.ParseString(createTable, i => i.i.column_def() /*Get this from the Outercurve.SQLiteParser library*/);
+SQLiteParseTreeNode statementNode = SQLiteParseVisitor.ParseString(createTable, i => i.column_def() /*A statement node from the Outercurve.SQLiteParser library*/);
 ```
 
 ### ...build the source
