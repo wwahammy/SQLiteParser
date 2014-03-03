@@ -25,6 +25,7 @@ Requirements
 --------
 ###To Build 
 - Visual Studio 2010 SP1 (I think) or equivalent
+
 ###To Run
 - .Net 4 or Mono equivalent
 
@@ -36,7 +37,7 @@ How do I?
 ----------
 ### ...alter a table?
 
-```
+```c#
 // get your original table named "table_to_modify"
 string createTable = <the result of running "SELECT sql FROM sqlite_master WHERE tbl_name = 'table_to_modify' AND type = 'table'" on your db>
 
@@ -69,13 +70,13 @@ IEnumerable<string> output = adapter.AlterTableStatements(input);
 //run each of the the statements in "output" on your database
 ```
 ### ...parse a CREATE TABLE or CREATE INDEX string?
-```
+```c#
 string createTable = "Create Table TEST_TestTable (id INTEGER primary key autoincrement, name TEXT NULL, last TEXT)";
 
 SQLiteParseTreeNode statementNodes = SQLiteParseVisitor.ParseString(createTable);
 ```
 #### ...parse only an element of a CREATE string?
-```
+```c#
 string parseOnlyColumnDef = "id INTEGER primary key autoincrement";
 
 SQLiteParseTreeNode statementNode = SQLiteParseVisitor.ParseString(createTable, i => i.i.column_def() /*Get this from the Outercurve.SQLiteParser library*/);
@@ -83,7 +84,7 @@ SQLiteParseTreeNode statementNode = SQLiteParseVisitor.ParseString(createTable, 
 
 ### ...build the source
 From a git command prompt:
-```
+```sh
 > git clone https://github.com/ericschultz/SQLiteParser.git
 > cd SQLiteParser
 > deploy.cmd #this builds SQLiteParser.sln, SQLiteTreeCreator.sln and runs tests.
@@ -92,17 +93,17 @@ Understanding the source
 -----
 The SQLite CREATE Statement Parser for .Net consists of two libraries. First, Outercurve.SQLiteParser (individually buildable from SQLiteParser.sln) consists of the basic parsing of a SQLite CREATE statement. The grammar is purposely written to be VERY close to the original grammar from the SQLite project and available in SQLiteParser\SQLiteParserSimple.g4. That said, the tree is not intuitive to use.
 
-The second library, Outercurve.SQLiteTreeCreator (individually buildable from SQLiteTreeCreator.sln AFTER SQLiteParser.sln has been built) has a few pieces of functionality. It can take in a CREATE statement (or the original parse tree from SQLiteParser) and cleaner, more intuitive tree for manipulation. Additionally, it has a TreeStringOutputVisitor class for converting this intuitive tree back into a CREATE statement. This allows someone to manipulate a CREATE statement via an object model and then get a new, corresponding statement. On top of this, Outercurve.SQLiteTreeCreator has a Fluent API for creating ALTER TABLE statements in SQLiteParseTreeCreator\AlterTable. This Fluent API allows you to create ALTER TABLE statements via code and then create the necessary statements to simulate proper ALTER TABLE support in SQLite.
+The second library, Outercurve.SQLiteTreeCreator (individually buildable from SQLiteTreeCreator.sln AFTER SQLiteParser.sln has been built) has a few pieces of functionality. It can take in a CREATE statement (or the original parse tree from SQLiteParser) and creates a cleaner, more intuitive tree for manipulation. Additionally, it has a TreeStringOutputVisitor class for converting this intuitive tree back into a CREATE statement. This allows someone to manipulate a CREATE statement via an object model and then get a new, corresponding statement. On top of this, Outercurve.SQLiteTreeCreator has a Fluent API for creating ALTER TABLE statements in SQLiteParseTreeCreator\AlterTable. This Fluent API allows you to create ALTER TABLE statements via code and then create the necessary statements to simulate proper ALTER TABLE support in SQLite.
 
 ##Limitations
 - The alter table simulator will likely fail to create usable statements if your foreign keys are not set to "DEFERRABLE INITIALLY DEFERRED." I think there's a way to get around this by turning off the SQLite foreign key support, modifying the tables, turn foreign key support back on and then raise a SQLite error if the foreign keys aren't valid anymore. Just didn't have time to work it out.
 
 ## FAQ:
 **Q: Why not connect directly to a SQLite DB and run the statements?**    
-A: There are lots of different ways to connect to a DB. The current design allows you flexibility to use any DB layer.    
+A: There are lots of different ways to connect to a DB. The current design allows you flexibility to use any DB layer.     
 **Q: Why are the two libraries in different solutions?**    
 A: The ANTLR4 MSBuild tasks create intermediate C# files for the grammar classes in Outercurve.SQLiteParser. VS Intellisense wasn't picking them up which meant we'd lose all Intellisense support while working on Outercurve.SQLParseTreeCreator. There may be a work around but I never found it.    
-**Q: Why no Fluent API for CREATE TABLE statements? **    
+**Q: Why no Fluent API for CREATE TABLE statements?**    
 A: Honestly, I just never had time to work it through. That said, I don't think it would be very difficult to do.    
 
   [1]: http://sqlite.org
