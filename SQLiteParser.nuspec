@@ -12,8 +12,8 @@
     <description>SQLite CREATE Statement Parser for .Net is a library for parsing and manipulating SQLite CREATE TABLE and CREATE INDEX statements and simulate ALTER TABLE support for SQLite.</description>
     <copyright>Copyright 2014</copyright>
     <dependencies>
-      <dependency id="Antlr4" version="4.1.0-alpha003"/>
-      <dependency id="Antlr4.Runtime" version="4.1.0-alpha003"/>
+      <dependency id="Antlr4" version="4.5.0-alpha003"/>
+      <dependency id="Antlr4.Runtime" version="4.5.0-alpha003"/>
     </dependencies>
   </metadata>
   <files>
